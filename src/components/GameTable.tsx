@@ -13,8 +13,6 @@ import {
   Flame,
   Volume2,
   VolumeX,
-  RotateCcw,
-  Sparkles,
 } from 'lucide-react';
 
 export function GameTable() {
@@ -58,13 +56,13 @@ export function GameTable() {
     opponents.push(...publicState.players.filter((p) => p.id !== playerId));
   }
 
-  // Active color styling (clean solid colors, no AI gradients)
+  // Active color styling (clean solid fills, zero gradients)
   const activeColorBadge = {
-    red: { bg: 'bg-[#D32F2F]', text: 'text-white', border: 'border-[#EF5350]', label: 'RED' },
-    blue: { bg: 'bg-[#1976D2]', text: 'text-white', border: 'border-[#42A5F5]', label: 'BLUE' },
-    green: { bg: 'bg-[#2E7D32]', text: 'text-white', border: 'border-[#66BB6A]', label: 'GREEN' },
-    yellow: { bg: 'bg-[#F57F17]', text: 'text-white', border: 'border-[#FFCA28]', label: 'YELLOW' },
-    wild: { bg: 'bg-[#262B3A]', text: 'text-gray-200', border: 'border-[#3D455C]', label: 'WILD' },
+    red: { bg: 'bg-[#D32F2F]', border: 'border-[#B71C1C]', label: 'RED' },
+    blue: { bg: 'bg-[#1976D2]', border: 'border-[#0D47A1]', label: 'BLUE' },
+    green: { bg: 'bg-[#2E7D32]', border: 'border-[#1B5E20]', label: 'GREEN' },
+    yellow: { bg: 'bg-[#F57F17]', border: 'border-[#E65100]', label: 'YELLOW' },
+    wild: { bg: 'bg-[#2C2C2C]', border: 'border-[#444444]', label: 'WILD' },
   }[publicState.activeColor || 'wild'];
 
   const handleCardClick = (card: Card) => {
@@ -95,85 +93,77 @@ export function GameTable() {
   );
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between game-table-felt select-none p-3 sm:p-5 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-3.5rem)] flex flex-col justify-between bg-[#141414] select-none p-3 sm:p-5 overflow-hidden">
       {/* 1. TOP HEADER BAR: Table Info & Turn Status */}
-      <div className="flex items-center justify-between z-20 max-w-7xl mx-auto w-full pb-2">
-        {/* Room Code Badge */}
-        <div className="flex items-center gap-3">
-          <div className="px-3 py-1.5 rounded-xl bg-[#151822] border border-[#262B3A] shadow-sm">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-              Table Code
-            </span>
-            <span className="text-sm font-mono font-black text-white tracking-wider">
+      <div className="flex items-center justify-between z-20 max-w-6xl mx-auto w-full pb-2">
+        <div className="flex items-center gap-2.5">
+          <div className="px-2.5 py-1 rounded bg-[#1C1C1C] border border-[#2E2E2E]">
+            <span className="text-[10px] font-mono text-[#777570] block leading-none mb-0.5">ROOM</span>
+            <span className="text-xs font-mono font-bold text-[#F2F0EB] tracking-wider">
               {publicState.roomCode}
             </span>
           </div>
 
-          {/* Current Turn Status Banner */}
+          {/* Turn indicator */}
           <div
-            className={`px-4 py-1.5 rounded-xl border flex items-center gap-2.5 transition-all ${
+            className={`px-3 py-1 rounded border flex items-center gap-2 text-xs font-bold tracking-wide ${
               isMyTurn
-                ? 'border-emerald-500/80 bg-emerald-950/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-                : 'border-[#262B3A] bg-[#151822] text-gray-300'
+                ? 'border-[#D6FF62] bg-[#1E2314] text-[#D6FF62]'
+                : 'border-[#2E2E2E] bg-[#1C1C1C] text-[#A5A39E]'
             }`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                isMyTurn ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'
+              className={`w-1.5 h-1.5 rounded-full ${
+                isMyTurn ? 'bg-[#D6FF62]' : 'bg-[#777570]'
               }`}
             />
-            <span className="text-xs sm:text-sm font-bold tracking-wide">
-              {isMyTurn ? 'YOUR TURN' : `${currentTurnPlayer?.name || 'Opponent'}'s Turn`}
-            </span>
+            <span>{isMyTurn ? 'YOUR TURN' : `${currentTurnPlayer?.name || 'Opponent'}'s Turn`}</span>
           </div>
         </div>
 
-        {/* Audio Mute Control */}
+        {/* Audio Mute */}
         <button
           onClick={toggleMute}
-          className="p-2 rounded-xl bg-[#151822] border border-[#262B3A] text-gray-400 hover:text-white transition"
+          className="p-1.5 rounded border border-[#2E2E2E] bg-[#1C1C1C] text-[#A5A39E] hover:text-[#F2F0EB] transition cursor-pointer"
           title={isMuted ? 'Unmute' : 'Mute'}
         >
-          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
         </button>
       </div>
 
       {/* 2. TOP TABLE SIDE: Opponents Seated Along Top */}
-      <div className="flex items-center justify-center gap-4 sm:gap-8 z-10 py-1">
+      <div className="flex items-center justify-center gap-3 sm:gap-6 z-10 py-1">
         {opponents.map((opp) => {
           const isOppTurn = opp.id === publicState.currentTurnPlayerId;
           return (
             <div
               key={opp.id}
-              className={`flex flex-col items-center p-2.5 sm:p-3 rounded-2xl border transition-all ${
+              className={`flex flex-col items-center p-2.5 rounded border transition-all ${
                 isOppTurn
-                  ? 'border-amber-400 bg-[#1C202E] shadow-md scale-105'
-                  : 'border-[#232734] bg-[#141620]'
+                  ? 'border-[#F2F0EB] bg-[#222222]'
+                  : 'border-[#282828] bg-[#1A1A1A]'
               }`}
             >
-              {/* Avatar + Connection + UNO badge */}
-              <div className="relative mb-1.5">
-                <Avatar avatarId={opp.avatar} size="md" />
+              <div className="relative mb-1">
+                <Avatar avatarId={opp.avatar} size="sm" />
                 {opp.hasCalledUno && (
-                  <span className="absolute -top-1.5 -right-2 px-1.5 py-0.2 rounded-md bg-[#D32F2F] text-[9px] font-black text-white border border-white shadow">
+                  <span className="absolute -top-1.5 -right-2 px-1 py-0.2 rounded-xs bg-[#D32F2F] text-[8px] font-black text-white">
                     UNO!
                   </span>
                 )}
                 {!opp.isConnected && (
-                  <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-rose-500 border border-[#141620]" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#D32F2F]" />
                 )}
               </div>
 
-              {/* Opponent Display Name */}
-              <p className="text-xs font-bold text-gray-200 truncate max-w-[110px] text-center">
+              <p className="text-xs font-semibold text-[#F2F0EB] truncate max-w-[90px] text-center">
                 {opp.name}
               </p>
 
-              {/* Opponent Card Backs Display */}
-              <div className="flex items-center gap-1.5 mt-1.5 bg-[#0E1017] px-2.5 py-1 rounded-lg border border-[#262B3A]">
-                <div className="w-3.5 h-5 rounded-xs bg-[#D32F2F] border border-white/40 shadow-xs" />
-                <span className="text-xs font-mono font-bold text-white">
-                  {opp.cardCount} cards
+              <div className="flex items-center gap-1 mt-1 bg-[#121212] px-2 py-0.5 rounded border border-[#2A2A2A]">
+                <div className="w-2.5 h-3.5 rounded-xs bg-[#D32F2F]" />
+                <span className="text-[11px] font-mono font-bold text-[#F2F0EB]">
+                  {opp.cardCount}
                 </span>
               </div>
             </div>
@@ -183,13 +173,12 @@ export function GameTable() {
 
       {/* 3. CENTER ARENA: Deck of Cards on Left Side, Discard Pile on Right Side */}
       <div className="relative flex flex-col items-center justify-center my-auto py-4 z-10">
-        <div className="w-full max-w-2xl bg-[#141722]/90 border border-[#262B3A] rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col items-center relative">
-          {/* Main 2-Side Layout: Deck on Left, Discard on Right */}
-          <div className="w-full flex items-center justify-around gap-6 sm:gap-12 relative">
-            {/* === LEFT SIDE: DRAW PILE === */}
+        <div className="w-full max-w-xl bg-[#1A1A1A] border border-[#2C2C2C] rounded-lg p-6 sm:p-8 flex flex-col items-center shadow-lg">
+          <div className="w-full flex items-center justify-around gap-6 sm:gap-10">
+            {/* === LEFT SIDE: DRAW DECK === */}
             <div className="flex flex-col items-center">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
-                Draw Deck
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#777570] mb-2 font-semibold">
+                Draw Pile
               </span>
 
               <button
@@ -199,9 +188,9 @@ export function GameTable() {
                   }
                 }}
                 disabled={!isMyTurn || publicState.hasDrawnCardThisTurn}
-                className={`relative group transition-transform ${
+                className={`relative transition-transform ${
                   isMyTurn && !publicState.hasDrawnCardThisTurn
-                    ? 'cursor-pointer hover:scale-105 active:scale-95'
+                    ? 'cursor-pointer hover:-translate-y-1'
                     : 'cursor-default opacity-85'
                 }`}
                 title={
@@ -212,40 +201,39 @@ export function GameTable() {
                     : 'Waiting for your turn'
                 }
               >
-                {/* 3D stacked deck effect */}
-                <div className="absolute -top-1.5 -left-1.5 w-full h-full rounded-2xl bg-[#181B26] border border-[#2D3346] pointer-events-none" />
-                <div className="absolute -top-3 -left-3 w-full h-full rounded-2xl bg-[#12141C] border border-[#262A38] pointer-events-none" />
+                {/* Physical card stacking effect */}
+                <div className="absolute -top-1 -left-1 w-full h-full rounded-md bg-[#252525] border border-[#333333] pointer-events-none" />
+                <div className="absolute -top-2 -left-2 w-full h-full rounded-md bg-[#1F1F1F] border border-[#2C2C2C] pointer-events-none" />
 
                 <CardView isBack size="md" />
 
-                {/* Remaining Card Badge */}
-                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#1A1D28] border border-[#353C4F] text-[10px] font-mono font-bold text-gray-200 shadow-md whitespace-nowrap">
-                  {publicState.drawPileCount} Cards
+                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-[#101010] border border-[#333333] text-[10px] font-mono text-[#F2F0EB] whitespace-nowrap">
+                  {publicState.drawPileCount} left
                 </div>
               </button>
             </div>
 
-            {/* === CENTER DIVIDER: Active Color & Turn Direction === */}
+            {/* === CENTER: Active Color & Direction === */}
             <div className="flex flex-col items-center justify-center gap-3">
-              {/* Active Color Badge */}
+              {/* Solid Active Color Swatch */}
               <div
-                className={`px-3 py-1.5 rounded-xl border ${activeColorBadge.bg} ${activeColorBadge.border} ${activeColorBadge.text} text-center shadow-md`}
+                className={`px-3 py-1.5 rounded border text-center ${activeColorBadge.bg} ${activeColorBadge.border} text-white shadow-sm`}
               >
-                <span className="text-[9px] font-bold uppercase tracking-wider block opacity-90 leading-none mb-0.5">
+                <span className="text-[9px] font-mono uppercase block opacity-85 leading-none mb-0.5 font-bold">
                   Color
                 </span>
-                <span className="text-xs font-black tracking-wide">
+                <span className="text-xs font-black tracking-wider">
                   {activeColorBadge.label}
                 </span>
               </div>
 
-              {/* Turn Direction Chevrons */}
-              <div className="flex items-center gap-1 text-gray-400 bg-[#181B26] px-2.5 py-1 rounded-lg border border-[#262B3A]">
-                <span className="text-[10px] font-bold uppercase">
-                  {publicState.direction === 1 ? 'Clockwise' : 'Counter'}
+              {/* Minimal Direction Tag */}
+              <div className="flex items-center gap-1.5 text-[#A5A39E] bg-[#121212] px-2.5 py-1 rounded border border-[#2E2E2E]">
+                <span className="text-[10px] font-mono uppercase">
+                  {publicState.direction === 1 ? 'CW' : 'CCW'}
                 </span>
                 <ArrowRight
-                  className={`w-3.5 h-3.5 transform ${
+                  className={`w-3 h-3 transform ${
                     publicState.direction === 1 ? 'rotate-0' : 'rotate-180'
                   }`}
                 />
@@ -254,13 +242,13 @@ export function GameTable() {
 
             {/* === RIGHT SIDE: DISCARD PILE === */}
             <div className="flex flex-col items-center">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#777570] mb-2 font-semibold">
                 Discard Pile
               </span>
 
               <div className="relative">
                 {publicState.topDiscardCard ? (
-                  <CardView card={publicState.topDiscardCard} size="md" rotation={-3} />
+                  <CardView card={publicState.topDiscardCard} size="md" rotation={-2} />
                 ) : (
                   <CardView isBack size="md" />
                 )}
@@ -268,82 +256,82 @@ export function GameTable() {
             </div>
           </div>
 
-          {/* Table Battle Log / Last Move Pill */}
+          {/* Understated Action Feed */}
           {publicState.logs.length > 0 && (
-            <div className="mt-6 px-4 py-1.5 rounded-full bg-[#1A1D28] border border-[#2B3042] text-xs text-gray-300 flex items-center gap-2 max-w-md shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
-              <span className="font-medium truncate">{publicState.logs[0].message}</span>
+            <div className="mt-5 px-3 py-1 rounded bg-[#121212] border border-[#282828] text-xs text-[#A5A39E] flex items-center gap-2 max-w-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A5A39E] shrink-0" />
+              <span className="truncate">{publicState.logs[0].message}</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* 4. BOTTOM TABLE SIDE: Local Player's Seat & Hand Shelf */}
-      <div className="w-full max-w-5xl mx-auto flex flex-col items-center z-20 pt-2">
-        {/* Action Buttons Bar: Draw, Pass, UNO!, Challenge */}
-        <div className="flex items-center gap-3 mb-3 flex-wrap justify-center">
-          {/* Draw Button */}
+      {/* 4. BOTTOM TABLE SIDE: Player's Seat & Hand Shelf */}
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center z-20 pt-1">
+        {/* Action Controls Bar */}
+        <div className="flex items-center gap-2.5 mb-2.5 flex-wrap justify-center">
+          {/* Draw Card Action */}
           {isMyTurn && !publicState.hasDrawnCardThisTurn && (
             <button
               onClick={drawCard}
-              className="px-5 py-2.5 rounded-xl bg-[#1C202C] hover:bg-[#252A3A] border border-[#30374A] text-xs font-bold text-white transition active:scale-95 shadow-sm"
+              className="px-4 py-2 rounded bg-[#202020] hover:bg-[#282828] border border-[#333333] text-xs font-bold text-[#F2F0EB] transition cursor-pointer"
             >
               Draw Card
             </button>
           )}
 
-          {/* Pass Turn Button (Available after drawing a card) */}
+          {/* Pass Turn Action */}
           {isMyTurn && publicState.hasDrawnCardThisTurn && (
             <button
               onClick={passTurn}
-              className="px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-xs font-bold text-white transition active:scale-95 shadow-md flex items-center gap-1.5"
+              className="px-5 py-2 rounded bg-[#D6FF62] hover:bg-[#C4F04D] text-[#101010] text-xs font-bold transition cursor-pointer"
             >
               Pass Turn →
             </button>
           )}
 
-          {/* Mechanical Bold UNO Button */}
+          {/* Solid Red Mechanical UNO Button */}
           {hand.length <= 2 && (
             <button
               onClick={callUno}
-              className="px-7 py-2.5 rounded-xl bg-[#D32F2F] hover:bg-[#B71C1C] border-2 border-white text-white font-black text-sm tracking-wider uppercase shadow-xl transition active:scale-95 flex items-center gap-2"
+              className="px-6 py-2 rounded bg-[#D32F2F] hover:bg-[#B71C1C] border border-white text-white font-black text-xs uppercase tracking-wider transition cursor-pointer flex items-center gap-1.5 shadow-md"
             >
-              <Flame className="w-4 h-4 fill-white" />
+              <Flame className="w-3.5 h-3.5 fill-white" />
               CALL UNO!
             </button>
           )}
 
-          {/* Catch Opponent UNO Challenge Button */}
+          {/* Catch UNO Challenge */}
           {challengeableOpponent && (
             <button
               onClick={() => challengeUno(challengeableOpponent.id)}
-              className="px-4 py-2.5 rounded-xl bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500 text-amber-300 font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded bg-[#F57F17] hover:bg-[#E65100] text-white font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
             >
-              <ShieldAlert className="w-4 h-4" />
+              <ShieldAlert className="w-3.5 h-3.5" />
               Catch {challengeableOpponent.name} (UNO!)
             </button>
           )}
         </div>
 
-        {/* Player Identity Shelf Label */}
-        <div className="flex items-center gap-2.5 mb-2 px-3.5 py-1 rounded-full bg-[#141722] border border-[#262B3A] text-xs text-gray-300 shadow-sm">
+        {/* Player Identity Tag */}
+        <div className="flex items-center gap-2 mb-2 px-3 py-1 rounded bg-[#181818] border border-[#282828] text-xs text-[#A5A39E]">
           <Avatar avatarId={me?.avatar || 'geom-1'} size="sm" />
-          <span className="font-extrabold text-white">{myDisplayName}</span>
-          <span className="text-gray-400">({hand.length} cards in hand)</span>
+          <span className="font-bold text-[#F2F0EB]">{myDisplayName}</span>
+          <span>({hand.length} cards)</span>
           {me?.hasCalledUno && (
-            <span className="px-2 py-0.2 rounded-full bg-[#D32F2F] text-[10px] font-black text-white">
-              UNO
+            <span className="px-1.5 py-0.2 rounded bg-[#D32F2F] text-[9px] font-black text-white">
+              UNO CALLED
             </span>
           )}
         </div>
 
-        {/* Player's Hand Tray (Cards Shelf) */}
-        <div className="w-full overflow-x-auto pb-3 pt-4 px-4 flex items-center justify-center">
-          <div className="flex items-end -space-x-4 sm:-space-x-6 hover:-space-x-3 transition-all duration-200 px-4 min-w-max">
-            {hand.map((card, idx) => {
+        {/* Player Hand Tray */}
+        <div className="w-full overflow-x-auto pb-2 pt-3 px-2 flex items-center justify-center">
+          <div className="flex items-end -space-x-4 sm:-space-x-6 hover:-space-x-3 transition-all duration-150 px-2 min-w-max">
+            {hand.map((card) => {
               const isPlayable = isMyTurn && validPlayCardIds.includes(card.id);
               return (
-                <div key={card.id} className="transform transition-transform duration-150">
+                <div key={card.id} className="transition-transform duration-100">
                   <CardView
                     card={card}
                     size="md"

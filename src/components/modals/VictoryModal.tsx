@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { useGame } from '@/context/GameContext';
 import { Avatar } from '../Avatar';
-import { Trophy, RotateCcw, Home, Sparkles } from 'lucide-react';
+import { Trophy, RotateCcw, Home } from 'lucide-react';
 
 interface VictoryModalProps {
   winnerId: string;
@@ -50,40 +50,36 @@ export function VictoryModal({ winnerId, onReturnToLobby }: VictoryModalProps) {
   if (!winner) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="w-full max-w-md bg-[#11131A] border border-violet-500/40 rounded-3xl shadow-[0_0_50px_rgba(124,58,237,0.3)] overflow-hidden p-6 text-center relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-violet-600/20 blur-3xl rounded-full pointer-events-none" />
-
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-4">
-          <Trophy className="w-3.5 h-3.5" />
-          Match Complete
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-in fade-in duration-200">
+      <div className="w-full max-w-sm bg-[#181818] border border-[#333333] rounded-xl shadow-2xl p-6 text-center">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#202020] border border-[#333333] text-[#A5A39E] text-[11px] font-mono uppercase tracking-wider mb-5">
+          <Trophy className="w-3.5 h-3.5 text-[#D6FF62]" />
+          Match Finished
         </div>
 
         {/* Winner Showcase */}
-        <div className="relative inline-block mb-3">
-          <Avatar avatarId={winner.avatar} size="xl" glow />
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-amber-500 border-2 border-[#11131A] flex items-center justify-center shadow-lg">
-            <Sparkles className="w-4 h-4 text-black" />
+        <div className="flex flex-col items-center justify-center mb-5">
+          <Avatar avatarId={winner.avatar} size="xl" />
+          <div className="mt-3">
+            <h2 className="text-xl font-bold text-[#F2F0EB] tracking-tight">
+              {isMe ? 'Victory! You Won!' : `${winner.name} Wins`}
+            </h2>
+            <p className="text-xs text-[#A5A39E] mt-1 max-w-xs mx-auto">
+              {isMe
+                ? 'You played your last card before everyone else.'
+                : 'All cards played and the round is officially resolved.'}
+            </p>
           </div>
         </div>
 
-        <h2 className="text-2xl font-black text-white tracking-tight mb-1">
-          {isMe ? 'Victory! You Won!' : `${winner.name} Wins!`}
-        </h2>
-        <p className="text-xs text-gray-400 mb-6">
-          {isMe
-            ? 'Incredible moves! You emptied your hand before anyone else.'
-            : 'Well played! All cards played and match officially resolved.'}
-        </p>
-
         {/* Action Controls */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2 pt-2 border-t border-[#262626]">
           <button
             onClick={rematch}
-            className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-bold text-sm text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] flex items-center justify-center gap-2 transition active:scale-98"
+            className="w-full py-3 rounded-lg bg-[#D6FF62] hover:bg-[#cbf556] font-bold text-xs tracking-wider uppercase text-[#101010] flex items-center justify-center gap-2 transition active:scale-98"
           >
-            <RotateCcw className="w-4 h-4" />
-            Rematch (Play Again)
+            <RotateCcw className="w-3.5 h-3.5" />
+            Play Again
           </button>
 
           <button
@@ -91,10 +87,10 @@ export function VictoryModal({ winnerId, onReturnToLobby }: VictoryModalProps) {
               leaveRoom();
               window.location.href = '/';
             }}
-            className="w-full py-3 rounded-xl bg-[#171A23] hover:bg-[#1E222D] border border-[#2B3040] font-semibold text-xs text-gray-300 hover:text-white flex items-center justify-center gap-2 transition"
+            className="w-full py-2.5 rounded-lg bg-[#202020] hover:bg-[#262626] border border-[#333333] font-medium text-xs text-[#A5A39E] hover:text-[#F2F0EB] flex items-center justify-center gap-2 transition"
           >
-            <Home className="w-4 h-4" />
-            Exit to Home
+            <Home className="w-3.5 h-3.5" />
+            Back to Home
           </button>
         </div>
       </div>

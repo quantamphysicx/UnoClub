@@ -1,53 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0D0E12;
-  --bg-secondary: #13151D;
-  --bg-elevated: #1A1D27;
-  --bg-surface: #222634;
-  --border-subtle: #262B3A;
-  --border-highlight: #3A4257;
-  --text-primary: #F4F5F7;
-  --text-secondary: #9BA3B4;
-  --text-muted: #626A7E;
-  --accent-purple: #7C3AED;
-  --color-uno-red: #D32F2F;
-  --color-uno-blue: #1976D2;
-  --color-uno-green: #2E7D32;
-  --color-uno-yellow: #F57F17;
+  --bg-main: #101010;
+  --bg-secondary: #181818;
+  --bg-raised: #202020;
+  --border-main: #333333;
+  --border-subtle: #242424;
+  --text-primary: #F2F0EB;
+  --text-secondary: #A5A39E;
+  --text-muted: #777570;
+  --accent-lime: #D6FF62;
+
+  --card-red: #D32F2F;
+  --card-blue: #1976D2;
+  --card-green: #2E7D32;
+  --card-yellow: #F57F17;
+  --card-wild: #1C1C1C;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-main);
   color: var(--text-primary);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   user-select: none;
 }
 
-/* Custom Clean Scrollbar */
+/* Crisp Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0D0E12;
+  background: #101010;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262B3A;
-  border-radius: 4px;
+  background: #2E2E2E;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A4257;
+  background: #444444;
 }
 
-/* Physical Card Perspective & Elevation */
-.card-perspective {
-  perspective: 1000px;
-}
-
+/* Card Physical Lift */
 .uno-card {
-  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.16s ease;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
   will-change: transform;
 }
 
@@ -56,18 +52,11 @@ body {
 }
 
 .uno-card-playable:hover {
-  transform: translateY(-14px) scale(1.04);
-  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.8), 0 0 0 2px #FFFFFF;
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
-/* Digital Game Felt Table Top */
+/* Flat Table Background */
 .game-table-felt {
-  background-color: #111319;
-  background-image: radial-gradient(circle at 50% 50%, #171A23 0%, #101218 70%, #0B0C10 100%);
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.7);
-}
-
-/* Tactile Direction Ring */
-.direction-ring {
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  background-color: #141414;
 }

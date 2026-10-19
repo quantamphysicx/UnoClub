@@ -10,7 +10,7 @@ import { GameTable } from '@/components/GameTable';
 import { HowToPlayModal } from '@/components/modals/HowToPlayModal';
 import { GuestProfileModal } from '@/components/modals/GuestProfileModal';
 import { Avatar, AVATAR_OPTIONS } from '@/components/Avatar';
-import { Sparkles, Users, ArrowRight, Loader2, Shield } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 function RoomInner() {
   const params = useParams();
@@ -66,7 +66,7 @@ function RoomInner() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0D0E12] text-[#F4F5F7] relative">
+    <div className="min-h-screen flex flex-col bg-[#101010] text-[#F2F0EB] relative">
       <Navbar
         onOpenHowToPlay={() => setIsHowToPlayOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
@@ -82,16 +82,15 @@ function RoomInner() {
           )
         ) : (
           /* Invite Link Preview Card */
-          <div className="max-w-md mx-auto w-full px-4 py-12 animate-in fade-in duration-200">
-            <div className="bg-[#12141C] border border-[#262B3A] rounded-2xl p-6 sm:p-8 shadow-xl relative">
-
+          <div className="max-w-sm mx-auto w-full px-4 py-12 animate-in fade-in duration-200">
+            <div className="bg-[#181818] border border-[#333333] rounded-xl p-6 sm:p-7 shadow-xl">
               <div className="text-center mb-6">
-                <span className="px-3 py-1 rounded-full bg-violet-600/20 border border-violet-500/30 text-[11px] font-bold text-violet-300 uppercase tracking-wider inline-block mb-3">
+                <span className="px-2.5 py-1 rounded bg-[#202020] border border-[#333333] text-[11px] font-mono text-[#A5A39E] uppercase tracking-wider inline-block mb-3">
                   Private Game Invitation
                 </span>
-                <h1 className="text-2xl font-black text-white">Join Room</h1>
-                <div className="mt-2 inline-block px-4 py-1 rounded-xl bg-[#171A24] border border-[#2D3344]">
-                  <span className="text-2xl font-mono font-black tracking-widest text-violet-400">
+                <h1 className="text-xl font-bold text-[#F2F0EB] tracking-tight">Join Room</h1>
+                <div className="mt-2 inline-block px-4 py-1.5 rounded-lg bg-[#202020] border border-[#333333]">
+                  <span className="text-2xl font-mono font-bold tracking-widest text-[#D6FF62]">
                     {roomCode}
                   </span>
                 </div>
@@ -99,7 +98,7 @@ function RoomInner() {
 
               <form onSubmit={handleJoin} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#A5A39E] mb-1.5">
                     Your Name
                   </label>
                   <input
@@ -111,13 +110,13 @@ function RoomInner() {
                     }}
                     placeholder="Enter your alias"
                     maxLength={20}
-                    className="w-full bg-[#171A23] border border-[#2B3040] focus:border-violet-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition focus:ring-1 focus:ring-violet-500"
+                    className="w-full bg-[#202020] border border-[#333333] focus:border-[#D6FF62] rounded-lg px-3.5 py-2 text-sm text-[#F2F0EB] placeholder-[#777570] outline-none transition"
                   />
-                  {joinError && <p className="text-xs text-red-400 mt-1">{joinError}</p>}
+                  {joinError && <p className="text-xs text-[#D32F2F] mt-1">{joinError}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#A5A39E] mb-2">
                     Select Avatar
                   </label>
                   <div className="grid grid-cols-4 gap-2">
@@ -126,10 +125,10 @@ function RoomInner() {
                         type="button"
                         key={opt.id}
                         onClick={() => setJoinAvatar(opt.id)}
-                        className={`p-1.5 rounded-xl border flex items-center justify-center transition ${
+                        className={`p-1.5 rounded-lg border flex items-center justify-center transition ${
                           joinAvatar === opt.id
-                            ? 'border-violet-500 bg-violet-600/20 ring-2 ring-violet-500/50'
-                            : 'border-[#232733] bg-[#171A23] hover:border-gray-600'
+                            ? 'border-[#D6FF62] bg-[#202020] ring-1 ring-[#D6FF62]'
+                            : 'border-[#333333] bg-[#202020] hover:border-[#555555]'
                         }`}
                       >
                         <Avatar avatarId={opt.id} size="sm" />
@@ -142,7 +141,7 @@ function RoomInner() {
                   <button
                     type="submit"
                     disabled={isJoining}
-                    className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-extrabold text-sm text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] flex items-center justify-center gap-2 transition active:scale-98 disabled:opacity-50"
+                    className="w-full py-3 rounded-lg bg-[#D6FF62] hover:bg-[#cbf556] font-bold text-xs uppercase tracking-wider text-[#101010] flex items-center justify-center gap-2 transition active:scale-98 disabled:opacity-50"
                   >
                     {isJoining ? (
                       <>
@@ -174,8 +173,8 @@ export default function RoomPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0B0C10] flex items-center justify-center text-gray-500 font-medium text-sm">
-          Entering room...
+        <div className="min-h-screen bg-[#101010] flex items-center justify-center text-[#777570] font-mono text-xs uppercase tracking-wider">
+          Connecting to room...
         </div>
       }
     >

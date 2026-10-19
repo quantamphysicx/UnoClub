@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardColor, CardValue } from '@/types/game';
+import { Card, CardColor } from '@/types/game';
 
 interface CardViewProps {
   card?: Card;
@@ -28,33 +28,24 @@ export function CardView({
 }: CardViewProps) {
   // Sizing definitions: maintaining exact standard 2.5:3.5 card ratio
   const sizeStyles = {
-    xs: 'w-10 h-14 text-[9px] rounded-lg',
-    sm: 'w-16 h-23 text-xs rounded-xl',
-    md: 'w-24 h-34 text-sm rounded-2xl',
-    lg: 'w-32 h-45 text-base rounded-2xl',
+    xs: 'w-10 h-14 text-[9px] rounded-sm',
+    sm: 'w-16 h-23 text-xs rounded-md',
+    md: 'w-24 h-34 text-sm rounded-lg',
+    lg: 'w-30 h-42 text-base rounded-lg',
   }[size];
 
   // ================= CARD BACK =================
   if (isBack || !card) {
     return (
       <div
-        className={`relative select-none uno-card shadow-lg bg-[#0E1017] border-2 border-[#222634] ${sizeStyles} ${className} overflow-hidden p-1 sm:p-1.5`}
+        className={`relative select-none uno-card bg-[#181818] border-2 border-[#2C2C2C] ${sizeStyles} ${className} overflow-hidden p-1 shadow-md`}
         style={{ transform: rotation ? `rotate(${rotation}deg)` : undefined }}
       >
         {/* Crisp white inner margin line */}
-        <div className="w-full h-full rounded-[inherit] border border-white/20 bg-[#141722] flex items-center justify-center relative overflow-hidden">
-          {/* Subtle geometric cross-hatch pattern */}
-          <div
-            className="absolute inset-0 opacity-15"
-            style={{
-              backgroundImage: `radial-gradient(circle, #FFFFFF 1px, transparent 1px)`,
-              backgroundSize: '8px 8px',
-            }}
-          />
-
+        <div className="w-full h-full rounded-[inherit] border border-white/20 bg-[#121212] flex items-center justify-center relative overflow-hidden">
           {/* Central Tilted Oval with Bold UNO Emblem */}
-          <div className="w-4/5 h-1/2 rounded-[50%] bg-[#D32F2F] border-2 border-white flex items-center justify-center transform -rotate-25 shadow-md">
-            <span className="font-black text-white italic tracking-tighter drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] text-xs sm:text-base font-sans">
+          <div className="w-4/5 h-1/2 rounded-[50%] bg-[#D32F2F] border-2 border-white flex items-center justify-center transform -rotate-25 shadow-sm">
+            <span className="font-black text-white italic tracking-tighter text-xs sm:text-base font-sans">
               UNO
             </span>
           </div>
@@ -64,45 +55,39 @@ export function CardView({
   }
 
   // ================= CARD FACE =================
-  // Solid, authentic casino card colors (NO AI gradient slop)
+  // Solid, flat, pure colors (Zero gradients)
   const colorPalette: Record<
     CardColor,
     {
       bg: string;
       border: string;
       textColor: string;
-      hex: string;
     }
   > = {
     red: {
       bg: 'bg-[#D32F2F]',
-      border: 'border-[#9A0007]',
+      border: 'border-[#B71C1C]',
       textColor: 'text-[#D32F2F]',
-      hex: '#D32F2F',
     },
     blue: {
       bg: 'bg-[#1976D2]',
-      border: 'border-[#004BA0]',
+      border: 'border-[#0D47A1]',
       textColor: 'text-[#1976D2]',
-      hex: '#1976D2',
     },
     green: {
       bg: 'bg-[#2E7D32]',
-      border: 'border-[#005005]',
+      border: 'border-[#1B5E20]',
       textColor: 'text-[#2E7D32]',
-      hex: '#2E7D32',
     },
     yellow: {
       bg: 'bg-[#F57F17]',
-      border: 'border-[#BC5100]',
+      border: 'border-[#E65100]',
       textColor: 'text-[#F57F17]',
-      hex: '#F57F17',
     },
     wild: {
-      bg: 'bg-[#181A20]',
-      border: 'border-[#2D313D]',
+      bg: 'bg-[#1C1C1C]',
+      border: 'border-[#333333]',
       textColor: 'text-white',
-      hex: '#181A20',
     },
   };
 
@@ -139,11 +124,11 @@ export function CardView({
       case 'wild_draw4':
         return <span className="font-black text-[10px] sm:text-xs text-amber-300 leading-none tracking-tight">+4</span>;
       default:
-        return <span className="font-black text-xs sm:text-sm text-white leading-none font-sans drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">{card.value}</span>;
+        return <span className="font-black text-xs sm:text-sm text-white leading-none font-sans">{card.value}</span>;
     }
   };
 
-  // Render Central Large Symbol inside the Iconic White Tilted Oval
+  // Render Central Large Symbol inside the Crisp White Oval
   const renderCenterGraphic = () => {
     const isSmall = size === 'xs';
     const isMedium = size === 'sm';
@@ -186,8 +171,8 @@ export function CardView({
       case 'wild':
         return (
           <div
-            className={`rounded-full border-2 border-white shadow-md flex flex-wrap overflow-hidden ${
-              isSmall ? 'w-5 h-5' : isMedium ? 'w-8 h-8' : 'w-12 h-12'
+            className={`rounded-full border-2 border-white flex flex-wrap overflow-hidden ${
+              isSmall ? 'w-5 h-5' : isMedium ? 'w-8 h-8' : 'w-11 h-11'
             }`}
           >
             <div className="w-1/2 h-1/2 bg-[#D32F2F]" />
@@ -200,7 +185,7 @@ export function CardView({
         return (
           <div className="flex flex-col items-center">
             <div
-              className={`rounded-full border border-white shadow-sm flex flex-wrap overflow-hidden mb-0.5 ${
+              className={`rounded-full border border-white flex flex-wrap overflow-hidden mb-0.5 ${
                 isSmall ? 'w-4 h-4' : isMedium ? 'w-6 h-6' : 'w-8 h-8'
               }`}
             >
@@ -209,7 +194,7 @@ export function CardView({
               <div className="w-1/2 h-1/2 bg-[#F57F17]" />
               <div className="w-1/2 h-1/2 bg-[#2E7D32]" />
             </div>
-            <span className={`font-black text-amber-500 tracking-tight leading-none ${isSmall ? 'text-xs' : isMedium ? 'text-sm' : 'text-xl'}`}>
+            <span className={`font-black text-[#F57F17] tracking-tight leading-none ${isSmall ? 'text-xs' : isMedium ? 'text-sm' : 'text-xl'}`}>
               +4
             </span>
           </div>
@@ -217,7 +202,7 @@ export function CardView({
       default:
         return (
           <span
-            className={`font-black font-sans leading-none drop-shadow-[0_2px_1px_rgba(0,0,0,0.25)] ${
+            className={`font-black font-sans leading-none ${
               isSmall ? 'text-base' : isMedium ? 'text-2xl' : 'text-4xl'
             }`}
           >
@@ -232,16 +217,16 @@ export function CardView({
       onClick={!disabled && isPlayable && onClick ? onClick : undefined}
       className={`relative select-none uno-card border-2 ${sizeStyles} ${theme.bg} ${theme.border} ${
         isPlayable
-          ? 'uno-card-playable ring-2 ring-white/90 shadow-[0_8px_20px_rgba(0,0,0,0.6)] z-10'
-          : 'cursor-default opacity-85 shadow-md'
-      } ${isSelected ? '-translate-y-4 ring-4 ring-yellow-400' : ''} ${
+          ? 'uno-card-playable ring-2 ring-white shadow-lg z-10'
+          : 'cursor-default opacity-85 shadow-sm'
+      } ${isSelected ? '-translate-y-3 ring-4 ring-[#D6FF62]' : ''} ${
         disabled ? 'opacity-40 pointer-events-none' : ''
-      } overflow-hidden p-1 sm:p-1.5 transition-all duration-150 ${className}`}
+      } overflow-hidden p-1 sm:p-1.5 transition-all duration-120 ${className}`}
       style={{
         transform: rotation ? `rotate(${rotation}deg)` : undefined,
       }}
     >
-      {/* Crisp White Inner Margin Frame (Authentic physical card stock) */}
+      {/* Crisp White Inner Margin Frame */}
       <div className="w-full h-full rounded-[inherit] border border-white/40 flex items-center justify-center relative overflow-hidden bg-black/10">
         {/* Top-Left Corner Index */}
         <div className="absolute top-1 left-1.5 flex flex-col items-center">
@@ -249,7 +234,7 @@ export function CardView({
         </div>
 
         {/* Central Iconic White Oval Plate (rotated -25 deg) */}
-        <div className="w-[82%] h-[68%] rounded-[50%] bg-white flex items-center justify-center transform -rotate-25 shadow-md border border-black/10">
+        <div className="w-[82%] h-[68%] rounded-[50%] bg-white flex items-center justify-center transform -rotate-25 shadow-sm border border-black/10">
           <div className={`transform rotate-25 ${theme.textColor} flex items-center justify-center`}>
             {renderCenterGraphic()}
           </div>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/context/GameContext';
 import { Avatar, AVATAR_OPTIONS } from '../Avatar';
-import { X, LogIn, Clipboard, Loader2, User } from 'lucide-react';
+import { X, Clipboard, Loader2, User } from 'lucide-react';
 
 interface JoinRoomModalProps {
   isOpen: boolean;
@@ -78,28 +78,23 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-md bg-[#12141C] border border-[#262B3A] rounded-2xl shadow-2xl overflow-hidden p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+      <div className="w-full max-w-md bg-[#181818] border border-[#333333] rounded shadow-2xl overflow-hidden p-6 relative">
         <button
           onClick={onClose}
           disabled={isSubmitting}
-          className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+          className="absolute top-4 right-4 p-1.5 text-[#777570] hover:text-[#F2F0EB] transition cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-            <LogIn className="w-4 h-4" />
-          </div>
-          <h2 className="text-xl font-bold text-white">Join Private Room</h2>
-        </div>
-        <p className="text-xs text-gray-400 mb-5">Enter the 6-character room code shared by your friend.</p>
+        <h2 className="text-lg font-bold text-[#F2F0EB] mb-1">Join with Code</h2>
+        <p className="text-xs text-[#777570] mb-5">Enter the 6-character room code to join the table.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Room Code */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#A5A39E] mb-1.5">
               Room Code
             </label>
             <div className="relative">
@@ -112,14 +107,14 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
                 }}
                 placeholder="e.g. K7M4QX"
                 maxLength={8}
-                className="w-full bg-[#181B26] border border-[#2D3346] focus:border-indigo-500 rounded-xl pl-4 pr-24 py-3 text-lg font-mono font-bold tracking-widest text-white placeholder-gray-600 outline-none transition focus:ring-1 focus:ring-indigo-500 uppercase"
+                className="w-full bg-[#202020] border border-[#333333] focus:border-[#D6FF62] rounded pl-3 pr-20 py-2.5 text-base font-mono font-bold tracking-widest text-[#F2F0EB] placeholder-[#555555] outline-none transition uppercase"
               />
               <button
                 type="button"
                 onClick={handlePaste}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#222736] hover:bg-[#2A3144] text-[11px] font-semibold text-gray-300 hover:text-white transition"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2.5 py-1 rounded bg-[#2A2A2A] hover:bg-[#333333] text-[11px] font-mono text-[#A5A39E] hover:text-[#F2F0EB] transition cursor-pointer"
               >
-                <Clipboard className="w-3.5 h-3.5" />
+                <Clipboard className="w-3 h-3" />
                 Paste
               </button>
             </div>
@@ -127,8 +122,8 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
 
           {/* Player Name */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5 flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-indigo-400" />
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#A5A39E] mb-1.5 flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5" />
               Your Display Name
             </label>
             <input
@@ -140,14 +135,14 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
               }}
               placeholder="e.g. Charlie"
               maxLength={20}
-              className="w-full bg-[#181B26] border border-[#2D3346] focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition focus:ring-1 focus:ring-indigo-500"
+              className="w-full bg-[#202020] border border-[#333333] focus:border-[#D6FF62] rounded px-3 py-2 text-sm text-[#F2F0EB] placeholder-[#555555] outline-none transition"
             />
           </div>
 
           {/* Avatar Selector */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-              Avatar
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#A5A39E] mb-1.5">
+              Avatar Symbol
             </label>
             <div className="grid grid-cols-4 gap-2">
               {AVATAR_OPTIONS.map((opt) => (
@@ -155,10 +150,10 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
                   type="button"
                   key={opt.id}
                   onClick={() => setGuestAvatar(opt.id)}
-                  className={`p-1.5 rounded-xl border flex items-center justify-center transition ${
+                  className={`p-1.5 rounded border flex items-center justify-center transition cursor-pointer ${
                     guestAvatar === opt.id
-                      ? 'border-indigo-500 bg-indigo-600/20 ring-2 ring-indigo-500/50'
-                      : 'border-[#262B3A] bg-[#181B26] hover:border-gray-600'
+                      ? 'border-[#D6FF62] bg-[#222818]'
+                      : 'border-[#2C2C2C] bg-[#202020] hover:border-[#444444]'
                   }`}
                 >
                   <Avatar avatarId={opt.id} size="sm" />
@@ -167,25 +162,25 @@ export function JoinRoomModal({ isOpen, onClose, initialCode = '' }: JoinRoomMod
             </div>
           </div>
 
-          {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
+          {error && <p className="text-xs text-[#D32F2F] mt-1">{error}</p>}
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#262B3A]">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#262626]">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 transition"
+              className="px-3.5 py-2 rounded text-xs font-semibold text-[#A5A39E] hover:text-[#F2F0EB] transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !code.trim()}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2 rounded text-xs font-bold text-[#101010] bg-[#D6FF62] hover:bg-[#C4F04D] transition cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   Connecting...
                 </>
               ) : (
