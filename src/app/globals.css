@@ -46,25 +46,29 @@ body {
 
 /* Card Physical Depth & Motion */
 .uno-card {
-  transition: transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.14s ease-out;
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.16s ease-out;
   will-change: transform;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Suggested / Playable Cards: Pushed out & luminous glow */
 .uno-card-playable {
   cursor: pointer;
+  transform: translateY(-8px);
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.5), 0 0 14px 2px rgba(214, 255, 98, 0.45);
+  z-index: 20;
 }
 
 .uno-card-playable:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.65), 0 6px 12px -2px rgba(0, 0, 0, 0.4);
-  z-index: 45;
+  transform: translateY(-18px);
+  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.7), 0 0 22px 4px rgba(214, 255, 98, 0.65);
+  z-index: 50 !important;
 }
 
 .uno-card-selected {
-  transform: translateY(-18px) !important;
-  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.75), 0 0 0 3px #D6FF62 !important;
-  z-index: 50 !important;
+  transform: translateY(-22px) !important;
+  box-shadow: 0 18px 36px -4px rgba(0, 0, 0, 0.8), 0 0 0 3px #D6FF62, 0 0 24px 4px rgba(214, 255, 98, 0.7) !important;
+  z-index: 55 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

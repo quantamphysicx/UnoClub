@@ -379,8 +379,8 @@ export function CardView({
       onClick={!disabled && isPlayable && onClick ? onClick : undefined}
       className={`relative select-none uno-card border-2 ${sizeStyles} ${theme.bg} ${theme.border} ${
         isPlayable
-          ? 'uno-card-playable ring-2 ring-white/90 shadow-md'
-          : 'cursor-default opacity-85 shadow-xs'
+          ? 'uno-card-playable ring-2 ring-[#D6FF62]/90'
+          : 'cursor-default opacity-65 shadow-xs'
       } ${isSelected ? 'uno-card-selected' : ''} ${
         disabled ? 'opacity-40 pointer-events-none' : ''
       } overflow-hidden transition-all duration-140 ${className}`}

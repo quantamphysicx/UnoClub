@@ -328,7 +328,7 @@ export function GameTable() {
         </div>
 
         {/* Player Hand Tray */}
-        <div className="w-full overflow-x-auto pb-2 pt-3 px-2 flex items-center justify-center">
+        <div className="w-full overflow-x-auto pb-3 pt-6 px-2 flex items-center justify-center">
           <div
             className={`flex items-end ${
               hand.length <= 4
