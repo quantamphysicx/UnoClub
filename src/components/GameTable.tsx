@@ -59,11 +59,11 @@ export function GameTable() {
 
   // Active color styling (clean solid fills, zero gradients)
   const activeColorBadge = {
-    red: { bg: 'bg-[#D32F2F]', border: 'border-[#B71C1C]', label: 'RED' },
-    blue: { bg: 'bg-[#1976D2]', border: 'border-[#0D47A1]', label: 'BLUE' },
+    red: { bg: 'bg-[#D32F2F]', border: 'border-[#9A0007]', label: 'RED' },
+    blue: { bg: 'bg-[#1565C0]', border: 'border-[#0D47A1]', label: 'BLUE' },
     green: { bg: 'bg-[#2E7D32]', border: 'border-[#1B5E20]', label: 'GREEN' },
-    yellow: { bg: 'bg-[#F57F17]', border: 'border-[#E65100]', label: 'YELLOW' },
-    wild: { bg: 'bg-[#2C2C2C]', border: 'border-[#444444]', label: 'WILD' },
+    yellow: { bg: 'bg-[#EAB308]', border: 'border-[#A16207]', label: 'YELLOW' },
+    wild: { bg: 'bg-[#242424]', border: 'border-[#383838]', label: 'WILD' },
   }[publicState.activeColor || 'wild'];
 
   const handleCardClick = (card: Card) => {

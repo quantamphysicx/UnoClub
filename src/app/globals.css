@@ -44,20 +44,20 @@ body {
   background: #444444;
 }
 
-/* Card Physical Depth & Motion */
+/* Card Physical Depth & Motion: 100% Solid Tactile Cardstock */
 .uno-card {
   transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.16s ease-out;
   will-change: transform;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: -3px 5px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* Suggested / Playable Cards: Glowing Outline & Luminous Accent */
 .uno-card-glow-outline {
-  box-shadow: 0 0 0 2.5px #D6FF62, 0 0 18px 4px rgba(214, 255, 98, 0.75), 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 0 0 2.5px #D6FF62, 0 0 20px 4px rgba(214, 255, 98, 0.85), 0 8px 24px rgba(0, 0, 0, 0.6) !important;
 }
 
 .uno-card-glow-outline:hover {
-  box-shadow: 0 0 0 3px #FFFFFF, 0 0 26px 7px rgba(214, 255, 98, 0.95), 0 12px 28px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 0 0 3px #FFFFFF, 0 0 28px 8px rgba(214, 255, 98, 0.95), 0 12px 30px rgba(0, 0, 0, 0.7) !important;
 }
 
 .uno-card-playable {

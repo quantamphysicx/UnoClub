@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardColor } from '@/types/game';
 
 // ==========================================
-// UNIFIED COLOR PALETTE — SOLID & BALANCED
+// UNIFIED COLOR PALETTE — SOLID, VIBRANT & TACTILE
 // ==========================================
 export const CARD_COLORS: Record<
   CardColor,
@@ -17,9 +17,9 @@ export const CARD_COLORS: Record<
   }
 > = {
   red: {
-    bg: 'bg-[#C62828]',
-    border: 'border-[#8E0000]',
-    textColor: 'text-[#C62828]',
+    bg: 'bg-[#D32F2F]',
+    border: 'border-[#9A0007]',
+    textColor: 'text-[#D32F2F]',
     cornerText: 'text-white',
     label: 'Red',
   },
@@ -38,15 +38,15 @@ export const CARD_COLORS: Record<
     label: 'Green',
   },
   yellow: {
-    bg: 'bg-[#F57F17]',
-    border: 'border-[#B45309]',
-    textColor: 'text-[#B45309]', // High-contrast amber-orange against white oval
-    cornerText: 'text-[#101010]', // Dark text on bright yellow cardstock for max readability
+    bg: 'bg-[#EAB308]', // Radiant golden yellow (authentic UNO yellow)
+    border: 'border-[#A16207]',
+    textColor: 'text-[#A16207]', // Deep amber for maximum contrast on white oval
+    cornerText: 'text-[#141414]', // Crisp dark text for max readability on yellow cardstock
     label: 'Yellow',
   },
   wild: {
-    bg: 'bg-[#181818]',
-    border: 'border-[#2E2E2E]',
+    bg: 'bg-[#171717]',
+    border: 'border-[#2A2A2A]',
     textColor: 'text-white',
     cornerText: 'text-white',
     label: 'Wild',
@@ -59,10 +59,10 @@ export const CARD_COLORS: Record<
 
 /** Skip Icon: Clean, bold prohibition geometry */
 function SkipIcon({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg' }) {
-  const dim = { xs: 16, sm: 22, md: 36, lg: 46 }[size];
-  const stroke = { xs: 3, sm: 3.5, md: 4.5, lg: 5 }[size];
+  const dim = { xs: 18, sm: 24, md: 38, lg: 48 }[size];
+  const stroke = { xs: 3.5, sm: 4, md: 5, lg: 6 }[size];
   return (
-    <svg width={dim} height={dim} viewBox="0 0 36 36" fill="none" className="shrink-0">
+    <svg width={dim} height={dim} viewBox="0 0 36 36" fill="none" className="shrink-0 drop-shadow-[0_1.5px_1px_rgba(0,0,0,0.15)]">
       <circle cx="18" cy="18" r="13" stroke="currentColor" strokeWidth={stroke} />
       <line
         x1="8.8"
@@ -79,26 +79,26 @@ function SkipIcon({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg' }) {
 
 /** Reverse Icon: Dynamic twin directional arrows forming a balanced rotational cycle */
 function ReverseIcon({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg' }) {
-  const dim = { xs: 16, sm: 22, md: 36, lg: 46 }[size];
+  const dim = { xs: 18, sm: 24, md: 38, lg: 48 }[size];
   return (
-    <svg width={dim} height={dim} viewBox="0 0 36 36" fill="none" className="shrink-0">
+    <svg width={dim} height={dim} viewBox="0 0 36 36" fill="none" className="shrink-0 drop-shadow-[0_1.5px_1px_rgba(0,0,0,0.15)]">
       {/* Top curved arrow pointing right */}
       <path
-        d="M9 15 C9 10 13 7.5 18 7.5 C23 7.5 26.5 9.5 28 12.5"
+        d="M8 15 C8 9.5 12.5 7 18 7 C23.5 7 27 9.5 28.5 13"
         stroke="currentColor"
         strokeWidth="4"
         strokeLinecap="round"
       />
-      <polygon points="24,15 32,13 28,6" fill="currentColor" />
+      <polygon points="23,16 31.5,13.5 27,6" fill="currentColor" />
 
       {/* Bottom curved arrow pointing left */}
       <path
-        d="M27 21 C27 26 23 28.5 18 28.5 C13 28.5 9.5 26.5 8 23.5"
+        d="M28 21 C28 26.5 23.5 29 18 29 C12.5 29 9 26.5 7.5 23"
         stroke="currentColor"
         strokeWidth="4"
         strokeLinecap="round"
       />
-      <polygon points="12,21 4,23 8,30" fill="currentColor" />
+      <polygon points="13,20 4.5,22.5 9,30" fill="currentColor" />
     </svg>
   );
 }
@@ -108,10 +108,10 @@ function DrawTwoGraphic({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg' }) {
   return (
     <div className="relative flex items-center justify-center">
       {/* Back mini card */}
-      <div className="w-5 h-7 sm:w-7 sm:h-9 md:w-9 md:h-12 rounded-xs bg-white border-2 border-current transform -rotate-12 -translate-x-1 -translate-y-1 shadow-xs opacity-60" />
+      <div className="w-5 h-7 sm:w-6 sm:h-9 md:w-8 md:h-11 rounded-xs bg-white border-2 border-current transform -rotate-12 -translate-x-1 -translate-y-1 shadow-sm" />
       {/* Front mini card */}
-      <div className="absolute w-5 h-7 sm:w-7 sm:h-9 md:w-9 md:h-12 rounded-xs bg-white border-2 border-current transform rotate-8 translate-x-1 translate-y-1 shadow-xs flex items-center justify-center">
-        <span className="font-black font-sans text-current text-[10px] sm:text-xs md:text-sm leading-none">
+      <div className="absolute w-5 h-7 sm:w-6 sm:h-9 md:w-8 md:h-11 rounded-xs bg-white border-2 border-current transform rotate-8 translate-x-1 translate-y-1 shadow-sm flex items-center justify-center">
+        <span className="font-black italic font-sans text-current text-[10px] sm:text-xs md:text-sm leading-none tracking-tighter">
           +2
         </span>
       </div>
@@ -127,13 +127,13 @@ function WildGraphic({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg' }) {
       style={{ width: dim, height: dim }}
       className="relative rounded-full border-2 border-black/20 shadow-sm overflow-hidden flex flex-wrap"
     >
-      <div className="w-1/2 h-1/2 bg-[#C62828] border-r border-b border-white" />
+      <div className="w-1/2 h-1/2 bg-[#D32F2F] border-r border-b border-white" />
       <div className="w-1/2 h-1/2 bg-[#1565C0] border-l border-b border-white" />
-      <div className="w-1/2 h-1/2 bg-[#F57F17] border-r border-t border-white" />
+      <div className="w-1/2 h-1/2 bg-[#EAB308] border-r border-t border-white" />
       <div className="w-1/2 h-1/2 bg-[#2E7D32] border-l border-t border-white" />
       {/* Central diamond emblem */}
       <div className="absolute inset-0 m-auto w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 bg-white rounded-full border border-black/10 shadow-xs flex items-center justify-center">
-        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-xs bg-[#181818] transform rotate-45" />
+        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-xs bg-[#171717] transform rotate-45" />
       </div>
     </div>
   );
@@ -145,15 +145,15 @@ function WildDrawFourGraphic({ size = 'md' }: { size?: 'xs' | 'sm' | 'md' | 'lg'
     <div className="relative flex flex-col items-center justify-center">
       {/* Fanned 4 mini-cards in perspective */}
       <div className="relative w-12 h-9 sm:w-16 sm:h-12 md:w-20 md:h-15 flex items-center justify-center mb-0.5">
-        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-7 md:h-10 rounded-xs bg-[#C62828] border border-white shadow-xs transform -rotate-24 -translate-x-3.5" />
-        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-7 md:h-10 rounded-xs bg-[#1565C0] border border-white shadow-xs transform -rotate-8 -translate-x-1" />
-        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-7 md:h-10 rounded-xs bg-[#2E7D32] border border-white shadow-xs transform rotate-8 translate-x-1" />
-        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-7 md:h-10 rounded-xs bg-[#F57F17] border border-white shadow-xs transform rotate-24 translate-x-3.5" />
+        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-6.5 md:h-9.5 rounded-xs bg-[#D32F2F] border border-white shadow-xs transform -rotate-24 -translate-x-3.5" />
+        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-6.5 md:h-9.5 rounded-xs bg-[#1565C0] border border-white shadow-xs transform -rotate-8 -translate-x-1" />
+        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-6.5 md:h-9.5 rounded-xs bg-[#2E7D32] border border-white shadow-xs transform rotate-8 translate-x-1" />
+        <div className="absolute w-4 h-6 sm:w-5 sm:h-8 md:w-6.5 md:h-9.5 rounded-xs bg-[#EAB308] border border-white shadow-xs transform rotate-24 translate-x-3.5" />
       </div>
 
       {/* Solid "+4" Plaque Badge */}
       <div className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-sm bg-[#141414] border-2 border-white shadow-md flex items-center justify-center">
-        <span className="font-black font-sans text-xs sm:text-sm md:text-base text-white leading-none tracking-tight">
+        <span className="font-black italic font-sans text-xs sm:text-sm md:text-base text-white leading-none tracking-tight">
           +4
         </span>
       </div>
@@ -170,23 +170,23 @@ function NumberGraphic({
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }) {
   const textSize = {
-    xs: 'text-lg',
-    sm: 'text-2xl',
-    md: 'text-4xl',
-    lg: 'text-5xl',
+    xs: 'text-xl',
+    sm: 'text-3xl',
+    md: 'text-4xl sm:text-5xl',
+    lg: 'text-6xl',
   }[size];
 
   const hasUnderline = num === '6' || num === '9';
 
   return (
     <div className="flex flex-col items-center justify-center leading-none">
-      <span className={`font-black font-sans ${textSize} tracking-tight select-none`}>
+      <span className={`font-black italic font-sans ${textSize} tracking-tighter select-none drop-shadow-[0_2px_1px_rgba(0,0,0,0.18)]`}>
         {num}
       </span>
       {hasUnderline && (
         <div
           className={`h-0.5 sm:h-1 rounded-full bg-current ${
-            size === 'xs' ? 'w-2.5 mt-0.5' : size === 'sm' ? 'w-4 mt-0.5' : 'w-6 mt-1'
+            size === 'xs' ? 'w-2.5 mt-0.5' : size === 'sm' ? 'w-4 mt-0.5' : 'w-5 sm:w-6 mt-0.5'
           }`}
         />
       )}
@@ -238,29 +238,29 @@ function CornerIndex({
       )}
 
       {card.value === 'draw2' && (
-        <span className="font-black font-sans text-[10px] sm:text-xs tracking-tighter leading-none">
+        <span className="font-black italic font-sans text-[10px] sm:text-xs tracking-tighter leading-none">
           +2
         </span>
       )}
 
       {card.value === 'wild' && (
         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/70 flex flex-wrap overflow-hidden shadow-2xs">
-          <div className="w-1/2 h-1/2 bg-[#C62828]" />
+          <div className="w-1/2 h-1/2 bg-[#D32F2F]" />
           <div className="w-1/2 h-1/2 bg-[#1565C0]" />
-          <div className="w-1/2 h-1/2 bg-[#F57F17]" />
+          <div className="w-1/2 h-1/2 bg-[#EAB308]" />
           <div className="w-1/2 h-1/2 bg-[#2E7D32]" />
         </div>
       )}
 
       {card.value === 'wild_draw4' && (
-        <span className="font-black font-sans text-[10px] sm:text-xs text-amber-300 leading-none tracking-tighter">
+        <span className="font-black italic font-sans text-[10px] sm:text-xs text-amber-300 leading-none tracking-tighter">
           +4
         </span>
       )}
 
       {!['skip', 'reverse', 'draw2', 'wild', 'wild_draw4'].includes(card.value) && (
         <div className="flex flex-col items-center">
-          <span className="font-black font-sans text-xs sm:text-sm tracking-tight leading-none">
+          <span className="font-black italic font-sans text-xs sm:text-sm tracking-tighter leading-none">
             {card.value}
           </span>
           {is6or9 && <div className="w-2 h-0.5 rounded-full bg-current mt-0.5" />}
@@ -281,10 +281,10 @@ function CardBackView({
   className?: string;
 }) {
   const sizeStyles = {
-    xs: 'w-11 h-15 rounded-sm p-0.5',
-    sm: 'w-16 h-23 rounded-md p-1',
-    md: 'w-24 h-34 rounded-lg p-1.5',
-    lg: 'w-32 h-45 rounded-xl p-2',
+    xs: 'w-12 h-17 rounded-md p-1',
+    sm: 'w-16 h-24 rounded-lg p-1.5',
+    md: 'w-24 h-36 sm:w-26 sm:h-38 rounded-xl p-1.5',
+    lg: 'w-32 h-48 rounded-2xl p-2',
   }[size];
 
   return (
@@ -293,12 +293,12 @@ function CardBackView({
       style={{ transform: rotation ? `rotate(${rotation}deg)` : undefined }}
     >
       {/* Crisp White Inner Margin Frame */}
-      <div className="w-full h-full rounded-[inherit] border border-white/25 bg-[#121212] flex items-center justify-center relative overflow-hidden">
+      <div className="w-full h-full rounded-[inherit] border-[1.5px] border-white/80 bg-[#121212] flex items-center justify-center relative overflow-hidden">
         {/* Subtle Geometric Precision Grid Frame */}
         <div className="absolute inset-1 rounded-[inherit] border border-[#242424] pointer-events-none" />
 
         {/* Central Tilted Crimson Plate */}
-        <div className="w-[84%] h-[56%] rounded-[50%] bg-[#C62828] border-2 border-white flex flex-col items-center justify-center transform -rotate-25 shadow-sm">
+        <div className="w-[82%] h-[56%] rounded-[50%] bg-[#D32F2F] border-2 border-white flex flex-col items-center justify-center transform -rotate-26 shadow-sm">
           {/* Athletic UNO wordmark */}
           <span className="font-black italic text-white tracking-tighter text-xs sm:text-base md:text-lg font-sans leading-none drop-shadow-xs">
             UNO
@@ -342,12 +342,12 @@ export function CardView({
   className = '',
   rotation = 0,
 }: CardViewProps) {
-  // Sizing definitions: authentic 2.5:3.5 card ratio
+  // Sizing definitions: authentic 1:1.48 card ratio
   const sizeStyles = {
-    xs: 'w-11 h-15 rounded-sm p-0.5',
-    sm: 'w-16 h-23 rounded-md p-1',
-    md: 'w-24 h-34 rounded-lg p-1.5',
-    lg: 'w-32 h-45 rounded-xl p-2',
+    xs: 'w-12 h-17 rounded-md p-1',
+    sm: 'w-16 h-24 rounded-lg p-1.5',
+    md: 'w-24 h-36 sm:w-26 sm:h-38 rounded-xl p-1.5',
+    lg: 'w-32 h-48 rounded-2xl p-2',
   }[size];
 
   // ================= CARD BACK =================
@@ -380,33 +380,33 @@ export function CardView({
   return (
     <div
       onClick={!disabled && isPlayable && onClick ? onClick : undefined}
-      className={`relative select-none uno-card border-2 ${sizeStyles} ${theme.bg} ${theme.border} ${
+      className={`relative select-none uno-card border-2 ${sizeStyles} ${theme.bg} ${theme.border} opacity-100 ${
         isGlowing
-          ? 'uno-card-playable uno-card-glow-outline ring-2 ring-[#D6FF62] shadow-xl'
-          : 'cursor-default opacity-60 shadow-xs'
+          ? 'uno-card-playable uno-card-glow-outline ring-2 ring-[#D6FF62] shadow-2xl'
+          : 'cursor-default shadow-md'
       } ${isSelected ? 'uno-card-selected' : ''} ${
-        disabled ? 'opacity-40 pointer-events-none' : ''
+        disabled ? 'pointer-events-none' : ''
       } overflow-hidden transition-all duration-140 ${className}`}
       style={{
         transform: rotation ? `rotate(${rotation}deg)` : undefined,
       }}
     >
       {/* Crisp White Inner Margin Frame */}
-      <div className="w-full h-full rounded-[inherit] border border-white/40 flex items-center justify-center relative overflow-hidden bg-black/5">
+      <div className="w-full h-full rounded-[inherit] border-[1.5px] border-white/85 sm:border-2 sm:border-white/90 flex items-center justify-center relative overflow-hidden">
         {/* Top-Left Corner Index (High Visibility in Hands) */}
-        <div className="absolute top-1 left-1.5 sm:top-1.5 sm:left-2 z-10">
+        <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 z-10">
           <CornerIndex card={card} size={size} />
         </div>
 
-        {/* Central Iconic White Oval Plate (rotated -25 deg) */}
-        <div className="w-[78%] h-[64%] rounded-[50%] bg-white flex items-center justify-center transform -rotate-25 shadow-xs border border-black/10">
-          <div className={`transform rotate-25 ${theme.textColor} flex items-center justify-center`}>
+        {/* Central Iconic White Oval Plate (rotated -26 deg) */}
+        <div className="w-[74%] h-[56%] rounded-[50%] bg-white flex items-center justify-center transform -rotate-26 shadow-[0_2px_4px_rgba(0,0,0,0.18)] border border-black/10">
+          <div className={`transform rotate-26 ${theme.textColor} flex items-center justify-center`}>
             {renderCenterGraphic()}
           </div>
         </div>
 
         {/* Bottom-Right Inverted Corner Index */}
-        <div className="absolute bottom-1 right-1.5 sm:bottom-1.5 sm:right-2 z-10">
+        <div className="absolute bottom-1 right-1 sm:bottom-1.5 sm:right-1.5 z-10">
           <CornerIndex card={card} inverted size={size} />
         </div>
       </div>
