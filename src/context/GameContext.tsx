@@ -95,7 +95,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   // Setup Socket connection
   useEffect(() => {
-    const socketInstance = io({
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || undefined;
+    const socketInstance = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
