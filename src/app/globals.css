@@ -31,20 +31,24 @@ body {
   width: 4px;
   height: 4px;
 }
+
 ::-webkit-scrollbar-track {
   background: #101010;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #2E2E2E;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #444444;
 }
 
-/* Card Physical Lift */
+/* Card Physical Depth & Motion */
 .uno-card {
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+  transition: transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.14s ease-out;
   will-change: transform;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .uno-card-playable {
@@ -52,8 +56,29 @@ body {
 }
 
 .uno-card-playable:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-12px);
+  box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.65), 0 6px 12px -2px rgba(0, 0, 0, 0.4);
+  z-index: 45;
+}
+
+.uno-card-selected {
+  transform: translateY(-18px) !important;
+  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.75), 0 0 0 3px #D6FF62 !important;
+  z-index: 50 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uno-card {
+    transition: none !important;
+  }
+
+  .uno-card-playable:hover {
+    transform: translateY(-4px) !important;
+  }
+
+  .uno-card-selected {
+    transform: translateY(-8px) !important;
+  }
 }
 
 /* Flat Table Background */

@@ -160,8 +160,10 @@ export function GameTable() {
                 {opp.name}
               </p>
 
-              <div className="flex items-center gap-1 mt-1 bg-[#121212] px-2 py-0.5 rounded border border-[#2A2A2A]">
-                <div className="w-2.5 h-3.5 rounded-xs bg-[#D32F2F]" />
+              <div className="flex items-center gap-1.5 mt-1 bg-[#121212] px-2 py-0.5 rounded border border-[#2A2A2A]">
+                <div className="w-3 h-4 rounded-xs bg-[#C62828] border border-white/40 shadow-2xs flex items-center justify-center">
+                  <span className="text-[7px] font-black italic text-white leading-none">U</span>
+                </div>
                 <span className="text-[11px] font-mono font-bold text-[#F2F0EB]">
                   {opp.cardCount}
                 </span>
@@ -327,15 +329,29 @@ export function GameTable() {
 
         {/* Player Hand Tray */}
         <div className="w-full overflow-x-auto pb-2 pt-3 px-2 flex items-center justify-center">
-          <div className="flex items-end -space-x-4 sm:-space-x-6 hover:-space-x-3 transition-all duration-150 px-2 min-w-max">
+          <div
+            className={`flex items-end ${
+              hand.length <= 4
+                ? '-space-x-2 sm:-space-x-3'
+                : hand.length <= 7
+                ? '-space-x-4 sm:-space-x-6'
+                : hand.length <= 11
+                ? '-space-x-6 sm:-space-x-8'
+                : hand.length <= 15
+                ? '-space-x-8 sm:-space-x-10'
+                : '-space-x-10 sm:-space-x-12'
+            } transition-all duration-150 px-2 min-w-max`}
+          >
             {hand.map((card) => {
               const isPlayable = isMyTurn && validPlayCardIds.includes(card.id);
+              const isSelected = selectedWildCard?.id === card.id;
               return (
-                <div key={card.id} className="transition-transform duration-100">
+                <div key={card.id} className="transition-transform duration-120 relative hover:z-30">
                   <CardView
                     card={card}
                     size="md"
                     isPlayable={isPlayable}
+                    isSelected={isSelected}
                     onClick={() => handleCardClick(card)}
                   />
                 </div>
