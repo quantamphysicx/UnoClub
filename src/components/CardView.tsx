@@ -322,6 +322,7 @@ export interface CardViewProps {
   isBack?: boolean;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   isPlayable?: boolean;
+  isSuggested?: boolean;
   isSelected?: boolean;
   disabled?: boolean;
   onClick?: () => void;
@@ -334,6 +335,7 @@ export function CardView({
   isBack = false,
   size = 'md',
   isPlayable = false,
+  isSuggested = false,
   isSelected = false,
   disabled = false,
   onClick,
@@ -355,6 +357,7 @@ export function CardView({
 
   // ================= CARD FACE =================
   const theme = CARD_COLORS[card.color];
+  const isGlowing = isPlayable || isSuggested;
 
   // Center Graphic Renderer
   const renderCenterGraphic = () => {
@@ -378,9 +381,9 @@ export function CardView({
     <div
       onClick={!disabled && isPlayable && onClick ? onClick : undefined}
       className={`relative select-none uno-card border-2 ${sizeStyles} ${theme.bg} ${theme.border} ${
-        isPlayable
-          ? 'uno-card-playable ring-2 ring-[#D6FF62]/90'
-          : 'cursor-default opacity-65 shadow-xs'
+        isGlowing
+          ? 'uno-card-playable uno-card-glow-outline ring-2 ring-[#D6FF62] shadow-xl'
+          : 'cursor-default opacity-60 shadow-xs'
       } ${isSelected ? 'uno-card-selected' : ''} ${
         disabled ? 'opacity-40 pointer-events-none' : ''
       } overflow-hidden transition-all duration-140 ${className}`}

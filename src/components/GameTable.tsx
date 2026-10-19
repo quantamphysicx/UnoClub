@@ -7,6 +7,7 @@ import { CardView } from './CardView';
 import { Avatar } from './Avatar';
 import { WildColorPickerModal } from './modals/WildColorPickerModal';
 import { VictoryModal } from './modals/VictoryModal';
+import { canPlayCard } from '@/lib/game-engine/rules';
 import {
   ShieldAlert,
   ArrowRight,
@@ -328,7 +329,7 @@ export function GameTable() {
         </div>
 
         {/* Player Hand Tray */}
-        <div className="w-full overflow-x-auto pb-3 pt-6 px-2 flex items-center justify-center">
+        <div className="w-full overflow-x-auto pb-4 pt-10 px-2 flex items-center justify-center">
           <div
             className={`flex items-end ${
               hand.length <= 4
@@ -343,14 +344,29 @@ export function GameTable() {
             } transition-all duration-150 px-2 min-w-max`}
           >
             {hand.map((card) => {
-              const isPlayable = isMyTurn && validPlayCardIds.includes(card.id);
+              // A card is suggested if it matches the current discard card / active color
+              const isSuggested = Boolean(
+                publicState.topDiscardCard &&
+                canPlayCard(card, publicState.topDiscardCard, publicState.activeColor)
+              );
+              // A card is legally playable if it's player's turn and valid or suggested
+              const isPlayable = isMyTurn && (validPlayCardIds.includes(card.id) || isSuggested);
               const isSelected = selectedWildCard?.id === card.id;
+
               return (
-                <div key={card.id} className="transition-transform duration-120 relative hover:z-30">
+                <div
+                  key={card.id}
+                  className={`transition-all duration-160 relative ${
+                    isSuggested
+                      ? '-translate-y-7 sm:-translate-y-8 z-20'
+                      : 'translate-y-0 z-10'
+                  } hover:z-40 hover:-translate-y-10 sm:hover:-translate-y-11`}
+                >
                   <CardView
                     card={card}
                     size="md"
                     isPlayable={isPlayable}
+                    isSuggested={isSuggested}
                     isSelected={isSelected}
                     onClick={() => handleCardClick(card)}
                   />
