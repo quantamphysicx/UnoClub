@@ -1,22 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0B0C10;
-  --bg-secondary: #11131A;
-  --bg-elevated: #171A23;
-  --bg-surface: #1E222D;
-  --border-subtle: #232733;
-  --border-highlight: #32384A;
-  --text-primary: #F3F4F6;
-  --text-secondary: #9CA3AF;
-  --text-muted: #6B7280;
+  --bg-primary: #0D0E12;
+  --bg-secondary: #13151D;
+  --bg-elevated: #1A1D27;
+  --bg-surface: #222634;
+  --border-subtle: #262B3A;
+  --border-highlight: #3A4257;
+  --text-primary: #F4F5F7;
+  --text-secondary: #9BA3B4;
+  --text-muted: #626A7E;
   --accent-purple: #7C3AED;
-  --accent-purple-glow: rgba(124, 58, 237, 0.35);
-  --accent-indigo: #4F46E5;
-  --color-uno-red: #EF4444;
-  --color-uno-blue: #3B82F6;
-  --color-uno-green: #10B981;
-  --color-uno-yellow: #F59E0B;
+  --color-uno-red: #D32F2F;
+  --color-uno-blue: #1976D2;
+  --color-uno-green: #2E7D32;
+  --color-uno-yellow: #F57F17;
 }
 
 body {
@@ -27,84 +25,49 @@ body {
   user-select: none;
 }
 
-/* Custom Sleek Scrollbar */
+/* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0C10;
+  background: #0D0E12;
 }
 ::-webkit-scrollbar-thumb {
-  background: #232733;
-  border-radius: 9999px;
+  background: #262B3A;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #32384A;
+  background: #3A4257;
 }
 
-/* Card 3D effects */
+/* Physical Card Perspective & Elevation */
 .card-perspective {
   perspective: 1000px;
 }
 
-.card-3d {
-  transform-style: preserve-3d;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+.uno-card {
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.16s ease;
+  will-change: transform;
 }
 
-.card-3d:hover {
-  transform: translateY(-16px) scale(1.05);
+.uno-card-playable {
+  cursor: pointer;
 }
 
-/* Subtle Table Radial Gradient */
+.uno-card-playable:hover {
+  transform: translateY(-14px) scale(1.04);
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.8), 0 0 0 2px #FFFFFF;
+}
+
+/* Digital Game Felt Table Top */
 .game-table-felt {
-  background: radial-gradient(circle at 50% 50%, #151821 0%, #0d0f15 70%, #08090d 100%);
+  background-color: #111319;
+  background-image: radial-gradient(circle at 50% 50%, #171A23 0%, #101218 70%, #0B0C10 100%);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.7);
 }
 
-/* Radiant glow animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.8), 0 0 60px rgba(124, 58, 237, 0.3);
-  }
-}
-
-.pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
-}
-
-@keyframes unoUrgent {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-  }
-  50% {
-    transform: scale(1.06);
-    box-shadow: 0 0 40px rgba(239, 68, 68, 0.9), 0 0 60px rgba(245, 158, 11, 0.6);
-  }
-}
-
-.uno-urgent {
-  animation: unoUrgent 1.2s infinite ease-in-out;
-}
-
-/* Shimmer effect */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.shimmer-text {
-  background: linear-gradient(90deg, #F3F4F6 0%, #A78BFA 50%, #F3F4F6 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 6s infinite linear;
+/* Tactile Direction Ring */
+.direction-ring {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
 }

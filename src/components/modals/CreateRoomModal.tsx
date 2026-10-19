@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/context/GameContext';
-import { X, Sparkles, Users, Clock, ShieldCheck, Loader2 } from 'lucide-react';
+import { Avatar, AVATAR_OPTIONS } from '../Avatar';
+import { X, Users, Clock, ShieldCheck, Loader2, Sparkles, User } from 'lucide-react';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -12,11 +13,21 @@ interface CreateRoomModalProps {
 
 export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
   const router = useRouter();
-  const { createRoom } = useGame();
+  const { createRoom, playerName, playerAvatar } = useGame();
 
-  const [maxPlayers, setMaxPlayers] = useState(8);
+  const [hostName, setHostName] = useState(playerName);
+  const [hostAvatar, setHostAvatar] = useState(playerAvatar);
+  const [maxPlayers, setMaxPlayers] = useState(4);
   const [turnTimerSeconds, setTurnTimerSeconds] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (playerName && playerName !== 'Player') {
+      setHostName(playerName);
+    }
+    setHostAvatar(playerAvatar);
+  }, [playerName, playerAvatar]);
 
   if (!isOpen) return null;
 
@@ -24,23 +35,37 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
     e.preventDefault();
     if (isSubmitting) return;
 
+    const cleanName = hostName.trim();
+    if (!cleanName || cleanName.length < 2) {
+      setError('Please enter a display name (at least 2 characters).');
+      return;
+    }
+
     setIsSubmitting(true);
-    const res = await createRoom({
-      maxPlayers,
-      startingCards: 7,
-      turnTimerSeconds,
-    });
+    setError('');
+
+    const res = await createRoom(
+      {
+        maxPlayers,
+        startingCards: 7,
+        turnTimerSeconds,
+      },
+      cleanName,
+      hostAvatar
+    );
 
     setIsSubmitting(false);
     if (res.success && res.roomCode) {
       onClose();
       router.push(`/room/${res.roomCode}`);
+    } else {
+      setError(res.error || 'Failed to create room.');
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-[#11131A] border border-[#232733] rounded-2xl shadow-2xl overflow-hidden p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="w-full max-w-md bg-[#12141C] border border-[#262B3A] rounded-2xl shadow-2xl overflow-hidden p-6 relative">
         <button
           onClick={onClose}
           disabled={isSubmitting}
@@ -50,39 +75,64 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
         </button>
 
         <div className="flex items-center gap-2.5 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-400">
+          <div className="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400">
             <Sparkles className="w-4 h-4" />
           </div>
           <h2 className="text-xl font-bold text-white">Create Private Room</h2>
         </div>
-        <p className="text-xs text-gray-400 mb-6">
-          Set up a private table. An invitation code will be generated for your friends.
+        <p className="text-xs text-gray-400 mb-5">
+          Configure table settings and choose your player alias.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Game Mode */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Host Name Input */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2">
-              Game Mode
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5 flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-violet-400" />
+              Your Display Name
             </label>
-            <div className="p-3 rounded-xl bg-[#171A23] border border-violet-500/40 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-white flex items-center gap-2">
-                  Classic UNO
-                  <span className="px-2 py-0.5 rounded-full bg-violet-600/30 text-violet-300 text-[10px] font-semibold border border-violet-500/30">
-                    Official Rules
-                  </span>
-                </p>
-                <p className="text-[11px] text-gray-400 mt-0.5">Standard 108 cards, skips, reverses, +2, wilds & +4.</p>
-              </div>
+            <input
+              type="text"
+              value={hostName}
+              onChange={(e) => {
+                setHostName(e.target.value);
+                setError('');
+              }}
+              placeholder="e.g. Alex"
+              maxLength={20}
+              className="w-full bg-[#181B26] border border-[#2D3346] focus:border-violet-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none transition focus:ring-1 focus:ring-violet-500"
+            />
+            {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+          </div>
+
+          {/* Avatar Selector */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+              Avatar
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {AVATAR_OPTIONS.map((opt) => (
+                <button
+                  type="button"
+                  key={opt.id}
+                  onClick={() => setHostAvatar(opt.id)}
+                  className={`p-1.5 rounded-xl border flex items-center justify-center transition ${
+                    hostAvatar === opt.id
+                      ? 'border-violet-500 bg-violet-600/20 ring-2 ring-violet-500/50'
+                      : 'border-[#262B3A] bg-[#181B26] hover:border-gray-600'
+                  }`}
+                >
+                  <Avatar avatarId={opt.id} size="sm" />
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Max Players */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2 flex items-center gap-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5 flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-violet-400" />
-              Maximum Capacity
+              Player Capacity
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[2, 4, 6, 8].map((num) => (
@@ -92,8 +142,8 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
                   onClick={() => setMaxPlayers(num)}
                   className={`py-2 rounded-xl text-xs font-bold border transition ${
                     maxPlayers === num
-                      ? 'border-violet-500 bg-violet-600/20 text-white shadow-[0_0_12px_rgba(124,58,237,0.3)]'
-                      : 'border-[#232733] bg-[#171A23] text-gray-400 hover:border-gray-600 hover:text-gray-200'
+                      ? 'border-violet-500 bg-violet-600/20 text-white'
+                      : 'border-[#262B3A] bg-[#181B26] text-gray-400 hover:border-gray-600 hover:text-gray-200'
                   }`}
                 >
                   {num} Players
@@ -104,13 +154,13 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
 
           {/* Turn Timer */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2 flex items-center gap-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5 flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-violet-400" />
               Turn Timer
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[
-                { val: 0, label: 'No Limit' },
+                { val: 0, label: 'Off' },
                 { val: 15, label: '15s' },
                 { val: 30, label: '30s' },
                 { val: 45, label: '45s' },
@@ -121,8 +171,8 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
                   onClick={() => setTurnTimerSeconds(item.val)}
                   className={`py-2 rounded-xl text-xs font-bold border transition ${
                     turnTimerSeconds === item.val
-                      ? 'border-violet-500 bg-violet-600/20 text-white shadow-[0_0_12px_rgba(124,58,237,0.3)]'
-                      : 'border-[#232733] bg-[#171A23] text-gray-400 hover:border-gray-600 hover:text-gray-200'
+                      ? 'border-violet-500 bg-violet-600/20 text-white'
+                      : 'border-[#262B3A] bg-[#181B26] text-gray-400 hover:border-gray-600 hover:text-gray-200'
                   }`}
                 >
                   {item.label}
@@ -132,15 +182,15 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
           </div>
 
           {/* Privacy Note */}
-          <div className="p-3 rounded-xl bg-[#141721] border border-[#232733] flex items-center gap-2.5">
+          <div className="p-3 rounded-xl bg-[#161822] border border-[#262B3A] flex items-center gap-2.5">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <p className="text-[11px] text-gray-400">
-              Private room. Only people with your unique 6-character room code can join.
+              Only friends with your unique 6-character room code can enter.
             </p>
           </div>
 
           {/* Submit */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#232733]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#262B3A]">
             <button
               type="button"
               onClick={onClose}
@@ -152,7 +202,7 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-500 shadow-[0_0_18px_rgba(124,58,237,0.4)] transition active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-500 transition active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -160,7 +210,7 @@ export function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
                   Creating Room...
                 </>
               ) : (
-                'Create Room'
+                'Create Table'
               )}
             </button>
           </div>

@@ -105,6 +105,14 @@ export class Room {
     }
   }
 
+  public updatePlayerIdentity(playerId: string, name: string, avatar: string) {
+    const player = this.engine.players.find((p) => p.id === playerId);
+    if (player) {
+      if (name && name.trim()) player.name = name.trim().slice(0, 20);
+      if (avatar) player.avatar = avatar;
+    }
+  }
+
   public markPlayerConnected(playerId: string) {
     const player = this.engine.players.find((p) => p.id === playerId);
     if (player) {
@@ -128,9 +136,12 @@ export class RoomManager {
     return this.sessions.get(token);
   }
 
-  public createOrUpdateSession(name: string, avatar: string, existingToken?: string): SessionData {
+  public createOrUpdateSession(name?: string, avatar?: string, existingToken?: string): SessionData {
     let token = existingToken;
     let session = token ? this.sessions.get(token) : undefined;
+
+    const cleanName = name && name.trim() ? name.trim().slice(0, 20) : 'Player';
+    const cleanAvatar = avatar || 'geom-1';
 
     if (!session) {
       token = `sess_${crypto.randomBytes(16).toString('hex')}`;
@@ -138,14 +149,18 @@ export class RoomManager {
       session = {
         token,
         playerId,
-        name: name.trim().slice(0, 20),
-        avatar,
+        name: cleanName,
+        avatar: cleanAvatar,
         lastActive: Date.now(),
       };
       this.sessions.set(token, session);
     } else {
-      session.name = name.trim().slice(0, 20);
-      session.avatar = avatar;
+      if (name && name.trim()) {
+        session.name = name.trim().slice(0, 20);
+      }
+      if (avatar) {
+        session.avatar = avatar;
+      }
       session.lastActive = Date.now();
     }
 

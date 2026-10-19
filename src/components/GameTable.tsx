@@ -8,14 +8,13 @@ import { Avatar } from './Avatar';
 import { WildColorPickerModal } from './modals/WildColorPickerModal';
 import { VictoryModal } from './modals/VictoryModal';
 import {
-  RotateCcw,
-  RotateCw,
-  AlertCircle,
   ShieldAlert,
   ArrowRight,
   Flame,
   Volume2,
   VolumeX,
+  RotateCcw,
+  Sparkles,
 } from 'lucide-react';
 
 export function GameTable() {
@@ -24,6 +23,7 @@ export function GameTable() {
     hand,
     validPlayCardIds,
     playerId,
+    playerName,
     playCard,
     drawCard,
     passTurn,
@@ -37,13 +37,15 @@ export function GameTable() {
 
   if (!publicState) return null;
 
+  // Local player reference
   const me = publicState.players.find((p) => p.id === playerId);
+  const myDisplayName = me?.name || playerName || 'You';
   const isMyTurn = publicState.currentTurnPlayerId === playerId;
   const currentTurnPlayer = publicState.players.find(
     (p) => p.id === publicState.currentTurnPlayerId
   );
 
-  // Opponents ordered clockwise starting after local player
+  // Opponents ordered starting from the player to the left
   const myIndex = publicState.players.findIndex((p) => p.id === playerId);
   const numPlayers = publicState.players.length;
   const opponents = [];
@@ -53,16 +55,16 @@ export function GameTable() {
       opponents.push(publicState.players[idx]);
     }
   } else {
-    opponents.push(...publicState.players);
+    opponents.push(...publicState.players.filter((p) => p.id !== playerId));
   }
 
-  // Active color glow styling
-  const activeColorGlow = {
-    red: 'shadow-[0_0_50px_rgba(239,68,68,0.4)] border-red-500/80',
-    blue: 'shadow-[0_0_50px_rgba(59,130,246,0.4)] border-blue-500/80',
-    green: 'shadow-[0_0_50px_rgba(16,185,129,0.4)] border-emerald-500/80',
-    yellow: 'shadow-[0_0_50px_rgba(245,158,11,0.4)] border-amber-400/80',
-    wild: 'shadow-[0_0_50px_rgba(139,92,246,0.4)] border-violet-500/80',
+  // Active color styling (clean solid colors, no AI gradients)
+  const activeColorBadge = {
+    red: { bg: 'bg-[#D32F2F]', text: 'text-white', border: 'border-[#EF5350]', label: 'RED' },
+    blue: { bg: 'bg-[#1976D2]', text: 'text-white', border: 'border-[#42A5F5]', label: 'BLUE' },
+    green: { bg: 'bg-[#2E7D32]', text: 'text-white', border: 'border-[#66BB6A]', label: 'GREEN' },
+    yellow: { bg: 'bg-[#F57F17]', text: 'text-white', border: 'border-[#FFCA28]', label: 'YELLOW' },
+    wild: { bg: 'bg-[#262B3A]', text: 'text-gray-200', border: 'border-[#3D455C]', label: 'WILD' },
   }[publicState.activeColor || 'wild'];
 
   const handleCardClick = (card: Card) => {
@@ -83,7 +85,7 @@ export function GameTable() {
     }
   };
 
-  // Find any opponent who can be challenged for uncalled UNO
+  // Find opponent who failed to declare UNO
   const challengeableOpponent = publicState.players.find(
     (p) =>
       p.id !== playerId &&
@@ -93,85 +95,85 @@ export function GameTable() {
   );
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between overflow-hidden game-table-felt select-none p-3 sm:p-6">
-      {/* 1. TOP BAR: Match Header & Status */}
-      <div className="flex items-center justify-between z-20 max-w-6xl mx-auto w-full">
-        {/* Match info */}
+    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between game-table-felt select-none p-3 sm:p-5 overflow-hidden">
+      {/* 1. TOP HEADER BAR: Table Info & Turn Status */}
+      <div className="flex items-center justify-between z-20 max-w-7xl mx-auto w-full pb-2">
+        {/* Room Code Badge */}
         <div className="flex items-center gap-3">
-          <div className="px-3 py-1 rounded-xl bg-[#141721]/90 border border-[#232733] backdrop-blur-md">
+          <div className="px-3 py-1.5 rounded-xl bg-[#151822] border border-[#262B3A] shadow-sm">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-              Room Code
+              Table Code
             </span>
-            <span className="text-sm font-mono font-bold text-white tracking-wider">
+            <span className="text-sm font-mono font-black text-white tracking-wider">
               {publicState.roomCode}
             </span>
           </div>
 
-          {/* Turn status indicator */}
+          {/* Current Turn Status Banner */}
           <div
-            className={`px-4 py-1.5 rounded-xl border backdrop-blur-md flex items-center gap-2 ${
+            className={`px-4 py-1.5 rounded-xl border flex items-center gap-2.5 transition-all ${
               isMyTurn
-                ? 'border-violet-500 bg-violet-600/20 text-violet-200 shadow-[0_0_15px_rgba(124,58,237,0.3)] animate-pulse'
-                : 'border-[#232733] bg-[#141721]/80 text-gray-300'
+                ? 'border-emerald-500/80 bg-emerald-950/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                : 'border-[#262B3A] bg-[#151822] text-gray-300'
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isMyTurn ? 'bg-violet-400 shadow-[0_0_8px_#A78BFA]' : 'bg-gray-500'
+                isMyTurn ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'
               }`}
             />
             <span className="text-xs sm:text-sm font-bold tracking-wide">
-              {isMyTurn ? 'YOUR TURN' : `${currentTurnPlayer?.name}'s Turn`}
+              {isMyTurn ? 'YOUR TURN' : `${currentTurnPlayer?.name || 'Opponent'}'s Turn`}
             </span>
           </div>
         </div>
 
-        {/* Audio Toggle */}
+        {/* Audio Mute Control */}
         <button
           onClick={toggleMute}
-          className="p-2 rounded-xl bg-[#141721] border border-[#232733] text-gray-400 hover:text-white transition"
-          title="Sound"
+          className="p-2 rounded-xl bg-[#151822] border border-[#262B3A] text-gray-400 hover:text-white transition"
+          title={isMuted ? 'Unmute' : 'Mute'}
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
       </div>
 
-      {/* 2. OPPONENTS SECTION: Arranged around the top/sides of table */}
-      <div className="flex items-center justify-center gap-3 sm:gap-6 flex-wrap my-2 z-10">
+      {/* 2. TOP TABLE SIDE: Opponents Seated Along Top */}
+      <div className="flex items-center justify-center gap-4 sm:gap-8 z-10 py-1">
         {opponents.map((opp) => {
           const isOppTurn = opp.id === publicState.currentTurnPlayerId;
           return (
             <div
               key={opp.id}
-              className={`flex flex-col items-center p-2 sm:p-3 rounded-2xl border transition-all duration-300 ${
+              className={`flex flex-col items-center p-2.5 sm:p-3 rounded-2xl border transition-all ${
                 isOppTurn
-                  ? 'border-violet-500/80 bg-violet-950/20 shadow-[0_0_20px_rgba(124,58,237,0.3)] scale-105'
-                  : 'border-[#232733]/70 bg-[#12141D]/60'
+                  ? 'border-amber-400 bg-[#1C202E] shadow-md scale-105'
+                  : 'border-[#232734] bg-[#141620]'
               }`}
             >
-              {/* Avatar + Turn indicator */}
+              {/* Avatar + Connection + UNO badge */}
               <div className="relative mb-1.5">
-                <Avatar avatarId={opp.avatar} size="md" glow={isOppTurn} />
+                <Avatar avatarId={opp.avatar} size="md" />
                 {opp.hasCalledUno && (
-                  <span className="absolute -top-1.5 -right-2 px-1.5 py-0.2 rounded-full bg-red-600 text-[9px] font-black text-white border border-red-400 shadow animate-bounce">
+                  <span className="absolute -top-1.5 -right-2 px-1.5 py-0.2 rounded-md bg-[#D32F2F] text-[9px] font-black text-white border border-white shadow">
                     UNO!
                   </span>
                 )}
                 {!opp.isConnected && (
-                  <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-rose-500 border border-black" />
+                  <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-rose-500 border border-[#141620]" />
                 )}
               </div>
 
-              {/* Opponent Name */}
-              <p className="text-xs font-bold text-gray-200 truncate max-w-[90px] text-center">
+              {/* Opponent Display Name */}
+              <p className="text-xs font-bold text-gray-200 truncate max-w-[110px] text-center">
                 {opp.name}
               </p>
 
-              {/* Opponent Cards Remaining Backs */}
-              <div className="flex items-center gap-1.5 mt-1 bg-black/40 px-2 py-0.5 rounded-lg border border-white/5">
-                <div className="w-3.5 h-5 rounded-xs bg-gradient-to-br from-violet-600 to-indigo-800 border border-white/20" />
-                <span className="text-xs font-bold font-mono text-white">
-                  {opp.cardCount}
+              {/* Opponent Card Backs Display */}
+              <div className="flex items-center gap-1.5 mt-1.5 bg-[#0E1017] px-2.5 py-1 rounded-lg border border-[#262B3A]">
+                <div className="w-3.5 h-5 rounded-xs bg-[#D32F2F] border border-white/40 shadow-xs" />
+                <span className="text-xs font-mono font-bold text-white">
+                  {opp.cardCount} cards
                 </span>
               </div>
             </div>
@@ -179,32 +181,17 @@ export function GameTable() {
         })}
       </div>
 
-      {/* 3. CENTER TABLE: Draw Pile, Discard Pile, Active Color Ring, Direction Chevrons */}
+      {/* 3. CENTER ARENA: Deck of Cards on Left Side, Discard Pile on Right Side */}
       <div className="relative flex flex-col items-center justify-center my-auto py-4 z-10">
-        {/* Direction Indicator & Active Color Ambient Glow */}
-        <div
-          className={`relative p-8 sm:p-12 rounded-full border-2 transition-all duration-500 ${activeColorGlow} bg-[#11131C]/80 backdrop-blur-sm`}
-        >
-          {/* Animated Direction Arrows Chevrons */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div
-              className={`w-full h-full rounded-full border border-dashed border-white/20 flex items-center justify-between px-2 text-white/40 ${
-                publicState.direction === 1 ? 'animate-spin' : 'animate-spin'
-              }`}
-              style={{
-                animationDuration: '14s',
-                animationDirection: publicState.direction === 1 ? 'normal' : 'reverse',
-              }}
-            >
-              <ArrowRight className="w-4 h-4 transform -rotate-45" />
-              <ArrowRight className="w-4 h-4 transform rotate-135" />
-            </div>
-          </div>
-
-          {/* Cards Area: Draw Deck + Discard Pile */}
-          <div className="flex items-center gap-6 sm:gap-10 relative z-10">
-            {/* Draw Pile (Clickable on turn) */}
+        <div className="w-full max-w-2xl bg-[#141722]/90 border border-[#262B3A] rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col items-center relative">
+          {/* Main 2-Side Layout: Deck on Left, Discard on Right */}
+          <div className="w-full flex items-center justify-around gap-6 sm:gap-12 relative">
+            {/* === LEFT SIDE: DRAW PILE === */}
             <div className="flex flex-col items-center">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+                Draw Deck
+              </span>
+
               <button
                 onClick={() => {
                   if (isMyTurn && !publicState.hasDrawnCardThisTurn) {
@@ -212,100 +199,125 @@ export function GameTable() {
                   }
                 }}
                 disabled={!isMyTurn || publicState.hasDrawnCardThisTurn}
-                className={`relative group transition-all duration-200 ${
+                className={`relative group transition-transform ${
                   isMyTurn && !publicState.hasDrawnCardThisTurn
                     ? 'cursor-pointer hover:scale-105 active:scale-95'
-                    : 'cursor-default opacity-80'
+                    : 'cursor-default opacity-85'
                 }`}
                 title={
                   isMyTurn
                     ? publicState.hasDrawnCardThisTurn
-                      ? 'Already drawn this turn'
-                      : 'Draw a card'
-                    : 'Not your turn'
+                      ? 'Already drew this turn'
+                      : 'Click to draw card'
+                    : 'Waiting for your turn'
                 }
               >
-                {/* 3D Stacked Deck Effect */}
-                <div className="absolute -top-1 -left-1 w-full h-full rounded-xl bg-[#1C202C] border border-[#2D3344] pointer-events-none" />
-                <div className="absolute -top-2 -left-2 w-full h-full rounded-xl bg-[#171B26] border border-[#2D3344] pointer-events-none" />
+                {/* 3D stacked deck effect */}
+                <div className="absolute -top-1.5 -left-1.5 w-full h-full rounded-2xl bg-[#181B26] border border-[#2D3346] pointer-events-none" />
+                <div className="absolute -top-3 -left-3 w-full h-full rounded-2xl bg-[#12141C] border border-[#262A38] pointer-events-none" />
+
                 <CardView isBack size="md" />
 
-                {/* Remaining Draw Count Badge */}
-                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#11131A] border border-[#2B3040] text-[10px] font-mono font-bold text-gray-300 shadow">
-                  {publicState.drawPileCount} left
+                {/* Remaining Card Badge */}
+                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#1A1D28] border border-[#353C4F] text-[10px] font-mono font-bold text-gray-200 shadow-md whitespace-nowrap">
+                  {publicState.drawPileCount} Cards
                 </div>
               </button>
             </div>
 
-            {/* Discard Pile (Top Played Card) */}
+            {/* === CENTER DIVIDER: Active Color & Turn Direction === */}
+            <div className="flex flex-col items-center justify-center gap-3">
+              {/* Active Color Badge */}
+              <div
+                className={`px-3 py-1.5 rounded-xl border ${activeColorBadge.bg} ${activeColorBadge.border} ${activeColorBadge.text} text-center shadow-md`}
+              >
+                <span className="text-[9px] font-bold uppercase tracking-wider block opacity-90 leading-none mb-0.5">
+                  Color
+                </span>
+                <span className="text-xs font-black tracking-wide">
+                  {activeColorBadge.label}
+                </span>
+              </div>
+
+              {/* Turn Direction Chevrons */}
+              <div className="flex items-center gap-1 text-gray-400 bg-[#181B26] px-2.5 py-1 rounded-lg border border-[#262B3A]">
+                <span className="text-[10px] font-bold uppercase">
+                  {publicState.direction === 1 ? 'Clockwise' : 'Counter'}
+                </span>
+                <ArrowRight
+                  className={`w-3.5 h-3.5 transform ${
+                    publicState.direction === 1 ? 'rotate-0' : 'rotate-180'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* === RIGHT SIDE: DISCARD PILE === */}
             <div className="flex flex-col items-center">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+                Discard Pile
+              </span>
+
               <div className="relative">
                 {publicState.topDiscardCard ? (
-                  <CardView card={publicState.topDiscardCard} size="md" />
+                  <CardView card={publicState.topDiscardCard} size="md" rotation={-3} />
                 ) : (
                   <CardView isBack size="md" />
                 )}
-
-                {/* Active Color Tag */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-black/90 border border-white/20 text-[10px] font-black uppercase tracking-wider text-white shadow-lg whitespace-nowrap">
-                  Color: {publicState.activeColor?.toUpperCase()}
-                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Pending Action / Battle Log Notification Pill */}
-        {publicState.logs.length > 0 && (
-          <div className="mt-4 px-4 py-1.5 rounded-full bg-[#141721]/90 border border-[#232733] backdrop-blur-md text-xs text-gray-300 flex items-center gap-2 shadow-lg animate-in fade-in slide-in-from-top-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
-            <span className="font-medium truncate max-w-xs sm:max-w-md">
-              {publicState.logs[0].message}
-            </span>
-          </div>
-        )}
+          {/* Table Battle Log / Last Move Pill */}
+          {publicState.logs.length > 0 && (
+            <div className="mt-6 px-4 py-1.5 rounded-full bg-[#1A1D28] border border-[#2B3042] text-xs text-gray-300 flex items-center gap-2 max-w-md shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
+              <span className="font-medium truncate">{publicState.logs[0].message}</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* 4. BOTTOM AREA: Local Player Hand & In-Game Controls */}
-      <div className="w-full max-w-5xl mx-auto flex flex-col items-center z-20">
-        {/* Action Controls Bar (Draw, Pass, UNO, Challenge) */}
+      {/* 4. BOTTOM TABLE SIDE: Local Player's Seat & Hand Shelf */}
+      <div className="w-full max-w-5xl mx-auto flex flex-col items-center z-20 pt-2">
+        {/* Action Buttons Bar: Draw, Pass, UNO!, Challenge */}
         <div className="flex items-center gap-3 mb-3 flex-wrap justify-center">
           {/* Draw Button */}
           {isMyTurn && !publicState.hasDrawnCardThisTurn && (
             <button
               onClick={drawCard}
-              className="px-4 py-2 rounded-xl bg-[#171A24] hover:bg-[#1E2230] border border-[#2D3344] text-xs font-bold text-gray-200 hover:text-white transition shadow-sm active:scale-95"
+              className="px-5 py-2.5 rounded-xl bg-[#1C202C] hover:bg-[#252A3A] border border-[#30374A] text-xs font-bold text-white transition active:scale-95 shadow-sm"
             >
               Draw Card
             </button>
           )}
 
-          {/* Pass Turn Button (Available only after drawing) */}
+          {/* Pass Turn Button (Available after drawing a card) */}
           {isMyTurn && publicState.hasDrawnCardThisTurn && (
             <button
               onClick={passTurn}
-              className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-xs font-bold text-white shadow-[0_0_15px_rgba(124,58,237,0.4)] transition active:scale-95 animate-pulse"
+              className="px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-xs font-bold text-white transition active:scale-95 shadow-md flex items-center gap-1.5"
             >
               Pass Turn →
             </button>
           )}
 
-          {/* UNO Button: High Impact urgency button when holding 1 or 2 cards */}
+          {/* Mechanical Bold UNO Button */}
           {hand.length <= 2 && (
             <button
               onClick={callUno}
-              className="px-6 py-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white font-black text-xs sm:text-sm tracking-wider uppercase uno-urgent shadow-[0_0_30px_rgba(239,68,68,0.7)] transition active:scale-95 flex items-center gap-2"
+              className="px-7 py-2.5 rounded-xl bg-[#D32F2F] hover:bg-[#B71C1C] border-2 border-white text-white font-black text-sm tracking-wider uppercase shadow-xl transition active:scale-95 flex items-center gap-2"
             >
               <Flame className="w-4 h-4 fill-white" />
               CALL UNO!
             </button>
           )}
 
-          {/* UNO Challenge Button: Catch opponent who failed to declare UNO */}
+          {/* Catch Opponent UNO Challenge Button */}
           {challengeableOpponent && (
             <button
               onClick={() => challengeUno(challengeableOpponent.id)}
-              className="px-4 py-2 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/50 text-amber-300 font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5 animate-bounce"
+              className="px-4 py-2.5 rounded-xl bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500 text-amber-300 font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5"
             >
               <ShieldAlert className="w-4 h-4" />
               Catch {challengeableOpponent.name} (UNO!)
@@ -313,34 +325,29 @@ export function GameTable() {
           )}
         </div>
 
-        {/* Local Player Identity Tag */}
-        <div className="flex items-center gap-2 mb-2 text-xs text-gray-400">
+        {/* Player Identity Shelf Label */}
+        <div className="flex items-center gap-2.5 mb-2 px-3.5 py-1 rounded-full bg-[#141722] border border-[#262B3A] text-xs text-gray-300 shadow-sm">
           <Avatar avatarId={me?.avatar || 'geom-1'} size="sm" />
-          <span className="font-bold text-white">{me?.name || 'You'}</span>
-          <span className="text-gray-500">({hand.length} cards)</span>
+          <span className="font-extrabold text-white">{myDisplayName}</span>
+          <span className="text-gray-400">({hand.length} cards in hand)</span>
           {me?.hasCalledUno && (
-            <span className="px-2 py-0.2 rounded-full bg-red-600 text-[10px] font-black text-white">
-              UNO CALLED
+            <span className="px-2 py-0.2 rounded-full bg-[#D32F2F] text-[10px] font-black text-white">
+              UNO
             </span>
           )}
         </div>
 
-        {/* Local Player Hand Fan / Scroll Container */}
-        <div className="w-full overflow-x-auto pb-4 pt-6 px-4 flex items-center justify-center">
-          <div className="flex items-end -space-x-5 sm:-space-x-7 hover:-space-x-4 transition-all duration-300 px-6 min-w-max">
+        {/* Player's Hand Tray (Cards Shelf) */}
+        <div className="w-full overflow-x-auto pb-3 pt-4 px-4 flex items-center justify-center">
+          <div className="flex items-end -space-x-4 sm:-space-x-6 hover:-space-x-3 transition-all duration-200 px-4 min-w-max">
             {hand.map((card, idx) => {
               const isPlayable = isMyTurn && validPlayCardIds.includes(card.id);
-              // Slight fan rotation based on position in hand
-              const mid = (hand.length - 1) / 2;
-              const rotation = Math.max(-12, Math.min(12, (idx - mid) * 2.5));
-
               return (
-                <div key={card.id} className="transform transition-transform duration-200">
+                <div key={card.id} className="transform transition-transform duration-150">
                   <CardView
                     card={card}
                     size="md"
                     isPlayable={isPlayable}
-                    rotation={rotation}
                     onClick={() => handleCardClick(card)}
                   />
                 </div>

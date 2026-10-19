@@ -57,7 +57,7 @@ function RoomInner() {
 
     setIsJoining(true);
     setJoinError('');
-    const res = await joinRoom(roomCode);
+    const res = await joinRoom(roomCode, joinName.trim(), joinAvatar);
     setIsJoining(false);
 
     if (!res.success) {
@@ -66,7 +66,7 @@ function RoomInner() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0B0C10] text-[#F3F4F6] relative">
+    <div className="min-h-screen flex flex-col bg-[#0D0E12] text-[#F4F5F7] relative">
       <Navbar
         onOpenHowToPlay={() => setIsHowToPlayOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
@@ -82,9 +82,8 @@ function RoomInner() {
           )
         ) : (
           /* Invite Link Preview Card */
-          <div className="max-w-md mx-auto w-full px-4 py-12 animate-in fade-in duration-300">
-            <div className="bg-[#11131A] border border-[#232733] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="max-w-md mx-auto w-full px-4 py-12 animate-in fade-in duration-200">
+            <div className="bg-[#12141C] border border-[#262B3A] rounded-2xl p-6 sm:p-8 shadow-xl relative">
 
               <div className="text-center mb-6">
                 <span className="px-3 py-1 rounded-full bg-violet-600/20 border border-violet-500/30 text-[11px] font-bold text-violet-300 uppercase tracking-wider inline-block mb-3">

@@ -85,9 +85,7 @@ export function LobbyView({ roomCode }: LobbyViewProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 animate-in fade-in duration-300">
       {/* Top Banner: Room Code Card */}
-      <div className="bg-gradient-to-r from-[#141722] via-[#171A26] to-[#12141D] border border-[#232733] rounded-3xl p-6 sm:p-8 shadow-2xl mb-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="bg-[#13151E] border border-[#262B3A] rounded-2xl p-6 sm:p-7 shadow-xl mb-6 relative">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">

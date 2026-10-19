@@ -31,8 +31,8 @@ interface GameContextType {
   isMuted: boolean;
   toggleMute: () => void;
 
-  createRoom: (settings?: Partial<RoomSettings>) => Promise<{ success: boolean; roomCode?: string; error?: string }>;
-  joinRoom: (roomCode: string) => Promise<{ success: boolean; roomCode?: string; error?: string }>;
+  createRoom: (settings?: Partial<RoomSettings>, customName?: string, customAvatar?: string) => Promise<{ success: boolean; roomCode?: string; error?: string }>;
+  joinRoom: (roomCode: string, customName?: string, customAvatar?: string) => Promise<{ success: boolean; roomCode?: string; error?: string }>;
   leaveRoom: () => void;
   toggleReady: () => void;
   updateSettings: (settings: Partial<RoomSettings>) => void;
@@ -112,17 +112,38 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       const pathParts = window.location.pathname.split('/');
       const urlCode = pathParts[1] === 'room' && pathParts[2] ? pathParts[2] : undefined;
 
-      socketInstance.emit('session:auth', { sessionToken: token, roomCode: urlCode }, (res: any) => {
-        if (res.success && res.player) {
-          setPlayerId(res.player.id);
-          if (res.sessionToken) {
-            setSessionToken(res.sessionToken);
-            if (typeof window !== 'undefined') {
-              sessionStorage.setItem('uno_session_token', res.sessionToken);
+      const currentStoredName =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('uno_player_name')
+          : null) || 'Player';
+      const currentStoredAvatar =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('uno_player_avatar')
+          : null) || 'geom-1';
+
+      socketInstance.emit(
+        'session:auth',
+        {
+          sessionToken: token,
+          roomCode: urlCode,
+          name: currentStoredName,
+          avatar: currentStoredAvatar,
+        },
+        (res: any) => {
+          if (res.success && res.player) {
+            setPlayerId(res.player.id);
+            if (res.player.name && res.player.name !== 'Player') {
+              setPlayerName(res.player.name);
+            }
+            if (res.sessionToken) {
+              setSessionToken(res.sessionToken);
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem('uno_session_token', res.sessionToken);
+              }
             }
           }
         }
-      });
+      );
     });
 
     socketInstance.on('disconnect', () => {
@@ -173,27 +194,44 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const setPlayerIdentity = useCallback(
     (name: string, avatar: string) => {
-      const cleanName = name.trim().slice(0, 20);
+      const cleanName = name.trim().slice(0, 20) || 'Player';
       setPlayerName(cleanName);
       setPlayerAvatar(avatar);
       if (typeof window !== 'undefined') {
         localStorage.setItem('uno_player_name', cleanName);
         localStorage.setItem('uno_player_avatar', avatar);
       }
+      if (socket) {
+        socket.emit('player:update_profile', { name: cleanName, avatar });
+      }
     },
-    []
+    [socket]
   );
 
   const createRoom = useCallback(
-    async (settings?: Partial<RoomSettings>): Promise<{ success: boolean; roomCode?: string; error?: string }> => {
+    async (
+      settings?: Partial<RoomSettings>,
+      customName?: string,
+      customAvatar?: string
+    ): Promise<{ success: boolean; roomCode?: string; error?: string }> => {
       if (!socket) return { success: false, error: 'Connecting to server...' };
+
+      const nameToUse = (customName && customName.trim().slice(0, 20)) || playerName;
+      const avatarToUse = customAvatar || playerAvatar;
+
+      if (customName && customName.trim()) {
+        setPlayerName(nameToUse);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('uno_player_name', nameToUse);
+        }
+      }
 
       return new Promise((resolve) => {
         socket.emit(
           'room:create',
           {
-            name: playerName,
-            avatar: playerAvatar,
+            name: nameToUse,
+            avatar: avatarToUse,
             settings,
           },
           (res: any) => {
@@ -214,16 +252,30 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   );
 
   const joinRoom = useCallback(
-    async (roomCode: string): Promise<{ success: boolean; roomCode?: string; error?: string }> => {
+    async (
+      roomCode: string,
+      customName?: string,
+      customAvatar?: string
+    ): Promise<{ success: boolean; roomCode?: string; error?: string }> => {
       if (!socket) return { success: false, error: 'Connecting to server...' };
+
+      const nameToUse = (customName && customName.trim().slice(0, 20)) || playerName;
+      const avatarToUse = customAvatar || playerAvatar;
+
+      if (customName && customName.trim()) {
+        setPlayerName(nameToUse);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('uno_player_name', nameToUse);
+        }
+      }
 
       return new Promise((resolve) => {
         socket.emit(
           'room:join',
           {
             roomCode: roomCode.trim().toUpperCase(),
-            name: playerName,
-            avatar: playerAvatar,
+            name: nameToUse,
+            avatar: avatarToUse,
           },
           (res: any) => {
             if (res.success) {

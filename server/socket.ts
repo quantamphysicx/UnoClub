@@ -50,51 +50,81 @@ export function setupSocketServer(io: SocketIOServer, roomManager: RoomManager) 
 
   io.on('connection', (socket: Socket) => {
     // 1. Session Auth / Reconnect
-    socket.on('session:auth', (data: { sessionToken?: string; roomCode?: string }, callback) => {
-      let session: SessionData;
-      if (data.sessionToken) {
-        const existing = roomManager.getSession(data.sessionToken);
-        if (existing) {
-          session = existing;
-          session.socketId = socket.id;
+    socket.on(
+      'session:auth',
+      (data: { sessionToken?: string; roomCode?: string; name?: string; avatar?: string }, callback) => {
+        let session: SessionData;
+        if (data.sessionToken) {
+          const existing = roomManager.getSession(data.sessionToken);
+          if (existing) {
+            session = existing;
+            session.socketId = socket.id;
+            if (data.name && data.name.trim()) session.name = data.name.trim().slice(0, 20);
+            if (data.avatar) session.avatar = data.avatar;
+          } else {
+            session = roomManager.createOrUpdateSession(data.name, data.avatar, data.sessionToken);
+          }
         } else {
-          session = roomManager.createOrUpdateSession('Player', 'geom-1', data.sessionToken);
+          session = roomManager.createOrUpdateSession(data.name, data.avatar);
         }
-      } else {
-        session = roomManager.createOrUpdateSession('Player', 'geom-1');
+
+        socketSessions.set(socket.id, session);
+
+        // Check if user was in a room
+        let activeRoom: Room | undefined;
+        if (session.currentRoomId) {
+          activeRoom = roomManager.getRoomById(session.currentRoomId);
+        } else if (data.roomCode) {
+          activeRoom = roomManager.getRoomByCode(data.roomCode);
+        }
+
+        if (activeRoom) {
+          socket.join(activeRoom.id);
+          activeRoom.updatePlayerIdentity(session.playerId, session.name, session.avatar);
+          activeRoom.markPlayerConnected(session.playerId);
+          syncRoomState(activeRoom);
+        }
+
+        callback({
+          success: true,
+          player: {
+            id: session.playerId,
+            name: session.name,
+            avatar: session.avatar,
+            isHost: activeRoom ? activeRoom.hostId === session.playerId : false,
+            isReady: false,
+            isConnected: true,
+            cardCount: 0,
+            hasCalledUno: false,
+          },
+          roomCode: activeRoom?.code,
+          sessionToken: session.token,
+        });
       }
+    );
 
-      socketSessions.set(socket.id, session);
+    // 1.5 Update Profile
+    socket.on('player:update_profile', (data: { name: string; avatar: string }, callback) => {
+      const session = socketSessions.get(socket.id);
+      if (session) {
+        if (data.name && data.name.trim()) {
+          session.name = data.name.trim().slice(0, 20);
+        }
+        if (data.avatar) {
+          session.avatar = data.avatar;
+        }
 
-      // Check if user was in a room
-      let activeRoom: Room | undefined;
-      if (session.currentRoomId) {
-        activeRoom = roomManager.getRoomById(session.currentRoomId);
-      } else if (data.roomCode) {
-        activeRoom = roomManager.getRoomByCode(data.roomCode);
+        if (session.currentRoomId) {
+          const room = roomManager.getRoomById(session.currentRoomId);
+          if (room) {
+            room.updatePlayerIdentity(session.playerId, session.name, session.avatar);
+            syncRoomState(room);
+          }
+        }
       }
-
-      if (activeRoom) {
-        socket.join(activeRoom.id);
-        activeRoom.markPlayerConnected(session.playerId);
-        syncRoomState(activeRoom);
+      if (typeof callback === 'function') {
+        callback({ success: true });
       }
-
-      callback({
-        success: true,
-        player: {
-          id: session.playerId,
-          name: session.name,
-          avatar: session.avatar,
-          isHost: activeRoom ? activeRoom.hostId === session.playerId : false,
-          isReady: false,
-          isConnected: true,
-          cardCount: 0,
-          hasCalledUno: false,
-        },
-        roomCode: activeRoom?.code,
-        sessionToken: session.token,
-      });
     });
 
     // 2. Create Room

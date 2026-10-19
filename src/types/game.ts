@@ -86,8 +86,8 @@ export interface ClientToServerEvents {
   'game:pass_turn': (callback: (res: { success: boolean; error?: string }) => void) => void;
   'game:call_uno': (callback: (res: { success: boolean; error?: string }) => void) => void;
   'game:challenge_uno': (targetPlayerId: string, callback: (res: { success: boolean; penaltyApplied?: boolean; error?: string }) => void) => void;
-  'game:rematch': () => void;
-  'session:auth': (data: { sessionToken: string; roomCode?: string }, callback: (res: { success: boolean; player?: Player; roomCode?: string; error?: string }) => void) => void;
+  'session:auth': (data: { sessionToken?: string; roomCode?: string; name?: string; avatar?: string }, callback: (res: { success: boolean; player?: Player; roomCode?: string; sessionToken?: string; error?: string }) => void) => void;
+  'player:update_profile': (data: { name: string; avatar: string }, callback?: (res: { success: boolean }) => void) => void;
 }
 
 // Server to Client Events
